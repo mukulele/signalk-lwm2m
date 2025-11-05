@@ -15,13 +15,13 @@ signalk-lwm2m/
 │   └── xml_to_json.ts             # XML Parser
 ├── lib/                          # LwM2M Library
 │   ├── lwm2m-lib.ts               # LwM2M Client entry point
-│   └── object*.js                  # LwM2M Client base object definitions (do not edit)
-│   └── ROADMAP.md                 # Node-API Roadmap
+│   └── object*.js                  # LwM2M Client definitions for base objects (do not edit)
+│   └── ROADMAP.md                  # API Roadmap
 ├── config/                       # Configuration files
 │   ├── settings.json              # LwM2M Objects + SignalK Mapping
-│   └── *.xml                      # LwM2M XML-Definitions
+│   └── *.xml                      # LwM2M Object Definitions
 ├── public/                       # Web Interface
-│   └── index.html                 # Local Interface (NO SERVER)
+│   └── index.html                 # Local Interface (standalone)
 └── build/                        # Binary files
     └── wakatiwaiclient            # LwM2M Client Binary
 ```
