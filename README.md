@@ -8,13 +8,14 @@
 ## Project Structure
 
 ```
-signalk-lwm2m-objects/
+signalk-lwm2m/
 ├── src/                          # TypeScript source code
 │   ├── index.ts                   # Main plugin (LwM2M client only)
 │   ├── types.ts                   # TypeScript definitions
 │   └── xml_to_json.ts             # XML Parser
-├── lib/                          # JavaScript Libraries
-│   ├── lwm2m-common.js            # LwM2M Client Wrapper
+├── lib/                          # LwM2M Library
+│   ├── lwm2m-lib.ts               # LwM2M Client entry point
+│   └── object*.js                  # LwM2M Client base object definitions (do not edit)
 │   └── ROADMAP.md                 # Node-API Roadmap
 ├── config/                       # Configuration files
 │   ├── settings.json              # LwM2M Objects + SignalK Mapping
