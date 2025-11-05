@@ -7,40 +7,21 @@
 **Version 0.0.1-alpha.1**
 
 A SignalK plugin to map SignalK paths to LwM2M (Lightweight M2M) objects/instances/resources.
-This plugin works directly with the LwM2M protocol using the integrated Wakatiwai client binary.
+This plugin will open a IPC connection to the wakatiwaiclient binary in /build.
+The included wakatiwaiclient was build for Debian Bookwoorm ARM64. Building a wakatiwaiclient for another platform is a separate project curently under development (github mukulele/wakatiwai).
 
-## Overview
+A set of LwM2M XML Object definitions is included in directory ./config . Delete or add (see https://www.openmobilealliance.org/specifications/registries/objects/) objects to meet your requirements.
 
-This plugin provides:
-- **LwM2M Client Integration**: Complete LwM2M client functionality with Wakatiwai binary
-- **Local Web Interface**: Works directly in browser without server dependencies
-- **XML to JSON Conversion**: Automatic processing of LwM2M XML definitions (https://www.openmobilealliance.org/specifications/registries/objects/) 
-- **SignalK Path Mapping**: Map SignalK paths to LwM2M resources via WebUI or manually in settings.json
+Restart SignalK Server and edit the mapping of LwM2M Objects/Instances/Ressources to SignalK Path's. This can be done with the LwM2M WebUI or manually in the settings.json file
 
-## Installation
+In SignalK -> PluginConfig you can edit the connection parameters.
+The LwM2M "Connection parameters to LwM2M server" are defaulting to the eclipse sandbox server.
+Get an IOT Sim Card (e.g. 1NCE 10EUR for a 10 year lifetime) and a CaT-M capable modem (e.g. Waveshare 30EUR SIM7000) and you are (allmost) ready to monitor and control your vessel from remote (as long as CAT-M is in reach). A example set-up of the CAT-M modem on a raspberry is a seperate project. (under developemt und github/mukulele)
+
+# Installation
 - **Please refer to Signalk**
 
-## Configuration
-
-### Mapping configuration through the SignalK web interface:
-
-1. Navigate to **Server → Plugin Config**
-2. Find **LwM2M Objects** in the plugin list
-3. Configure connection parameters, client settings, and logging options
-4. Enable the plugin
-
-### LwM2M Client/Server Configuration
-SignalK -> PluginConfig
-defaulting to eclipse server sandbox
-
-- **Connection Parameters**: LwM2M server host, ports, IPv4/IPv6 settings
-- **DTLS Security**: PSK identity and keys for secure connections  
-- **Client Parameters**: Endpoint name, lifetime, bootstrap settings
-- **Logging Options**: Debug output and message dumping
-
-## Development
-
-### Project Structure
+# Project Structure
 
 ```
 signalk-lwm2m-objects/
@@ -60,7 +41,7 @@ signalk-lwm2m-objects/
 └── build/                        # Binary files
     └── wakatiwaiclient          # LwM2M Client Binary
 ```
-## License
+# License
 
 MIT License - see LICENSE file for details.
 
