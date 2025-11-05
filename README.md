@@ -10,12 +10,12 @@
 ```
 signalk-lwm2m/
 ├── src/                          # TypeScript source code
-│   ├── index.ts                   # Main plugin (LwM2M client only)
+│   ├── index.ts                   # Package.json entry point and SignalK plugin interface
 │   ├── types.ts                   # TypeScript definitions
 │   └── xml_to_json.ts             # XML Parser
 ├── lib/                          # LwM2M Library
 │   ├── lwm2m-lib.ts               # LwM2M Client entry point
-│   └── object*.js                  # LwM2M Client definitions for base objects (do not edit)
+│   └── object*.js                  # LwM2M Client base object definitions (do not edit)
 │   └── ROADMAP.md                  # API Roadmap
 ├── config/                       # Configuration files
 │   ├── settings.json              # LwM2M Objects + SignalK Mapping
@@ -53,7 +53,7 @@ A CaT-M capable modem (e.g. Waveshare 30EUR SIM7000)
 Monitor and control your vessel from remote (as long as CAT-M is in reach) at low cost.
 
 ## Remarks
-A example set-up my CAT-M modem on a Raspberry is a seperate project.
+An example set-up of your CAT-M modem is a seperate project.
 (under developemt under github/mukulele).
 
 ## Plugin Installation
