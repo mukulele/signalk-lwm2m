@@ -45,20 +45,21 @@ This can be done with the LwM2M WebUI or manually in the ./config/settings.json 
 In SignalK -> PluginConfig you can edit the connection parameters.
 The LwM2M cConnection parameters are defaulting to the eclipse sandbox server.
 
-### My setup:
+### My setup
 An IOT Sim Card (e.g. 1NCE 10EUR for a 10 year lifetime)
 A CaT-M capable modem (e.g. Waveshare 30EUR SIM7000) 
 
-### Use Case:
+### Use Case
 Monitor and control your vessel from remote (as long as CAT-M is in reach) at low cost.
 
-## Remarks:
+## Remarks
 A example set-up of the CAT-M modem on a raspberry is a seperate project.
 (under developemt under github/mukulele).
 
-## Plugin Installation:
+## Plugin Installation
 Please refer to Signalk Doc's ...
 
-# License - see LICENSE file for details.
+## License
+See LICENSE file for details.
 
-# Developed for the SignalK Maritime Data Platform!
+## Developed for the SignalK Maritime Data Platform!
