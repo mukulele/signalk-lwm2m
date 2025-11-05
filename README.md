@@ -1,17 +1,40 @@
+
 # SignalK LwM2M Plugin
 
 [![Build and Test](https://github.com/mukulele/signalk-lwm2m/workflows/Build%20and%20Test/badge.svg)](https://github.com/mukulele/signalk-lwm2m/actions)
 [![npm version](https://badge.fury.io/js/signalk-lwm2m.svg)](https://www.npmjs.com/package/signalk-lwm2m)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Version 0.0.1-alpha.1**
+## Project Structure
+
+```
+signalk-lwm2m-objects/
+├── src/                          # TypeScript source code
+│   ├── index.ts                  # Main plugin (LwM2M client only)
+│   ├── types.ts                  # TypeScript definitions
+│   └── xml_to_json.ts           # XML Parser
+├── lib/                          # JavaScript Libraries
+│   ├── lwm2m-common.js          # LwM2M Client Wrapper
+│   └── ROADMAP.md               # Node-API Roadmap
+├── config/                       # Configuration files
+│   ├── settings.json            # LwM2M Objects + SignalK Mapping
+│   ├── lwm2m-defaults.json      # Server Configuration
+│   └── *.xml                    # LwM2M XML-Definitions
+├── public/                       # Web Interface
+│   └── index-local.html         # Local Interface (NO SERVER)
+└── build/                        # Binary files
+    └── wakatiwaiclient          # LwM2M Client Binary
+```
+
+## Abstract
 
 A SignalK plugin to map SignalK paths to LwM2M (Lightweight M2M) objects/instances/resources.
 
 This plugin will open a IPC connection to the wakatiwaiclient binary in ./build.
 
 The included wakatiwaiclient was build for Debian Bookwoorm ARM64. 
-Building a wakatiwaiclient for another platform is a separate project curently under development (github mukulele/wakatiwai).
+Building a wakatiwaiclient for another platform is a separate project curently under development.
+(github mukulele/wakatiwai).
 
 A set of LwM2M XML Object definitions is included in directory ./config . 
 Delete or add (see https://www.openmobilealliance.org/specifications/registries/objects/) objects to meet your requirements.
@@ -34,29 +57,8 @@ A example set-up of the CAT-M modem on a raspberry is a seperate project.
 (under developemt under github/mukulele).
 
 Plugin Installation:
-Please refer to Signalk Doc'S ...
+Please refer to Signalk Doc's ...
 
 License - see LICENSE file for details.
 
-# Project Structure
-
-```
-signalk-lwm2m-objects/
-├── src/                          # TypeScript source code
-│   ├── index.ts                  # Main plugin (LwM2M client only)
-│   ├── types.ts                  # TypeScript definitions
-│   └── xml_to_json.ts           # XML Parser
-├── lib/                          # JavaScript Libraries
-│   ├── lwm2m-common.js          # LwM2M Client Wrapper
-│   └── ROADMAP.md               # Node-API Roadmap
-├── config/                       # Configuration files
-│   ├── settings.json            # LwM2M Objects + SignalK Mapping
-│   ├── lwm2m-defaults.json      # Server Configuration
-│   └── *.xml                    # LwM2M XML-Definitions
-├── public/                       # Web Interface
-│   └── index-local.html         # Local Interface (NO SERVER)
-└── build/                        # Binary files
-    └── wakatiwaiclient          # LwM2M Client Binary
-```
-
-Developed for the SignalK Maritime Data Platform!
+## Developed for the SignalK Maritime Data Platform!
