@@ -1,0 +1,1492 @@
+{
+  "3": {
+    "objectId": "3",
+    "name": "Device",
+    "description": "This LwM2M Object provides a range of device related information which can be queried by the LwM2M Server, and a device reboot and factory reset function.",
+    "isSingleton": true,
+    "resources": {
+      "0": {
+        "id": "0",
+        "name": "Manufacturer",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Human readable manufacturer name"
+      },
+      "1": {
+        "id": "1",
+        "name": "Model Number",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "A model identifier (manufacturer specified string)"
+      },
+      "2": {
+        "id": "2",
+        "name": "Serial Number",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Serial Number"
+      },
+      "3": {
+        "id": "3",
+        "name": "Firmware Version",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Current firmware version of the Device.The Firmware Management function could rely on this resource."
+      },
+      "6": {
+        "id": "6",
+        "name": "Available Power Sources",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..7",
+        "description": "0: DC power\r\n1: Internal Battery\r\n2: External Battery\r\n3: Fuel Cell\r\n4: Power over Ethernet\r\n5: USB\r\n6: AC (Mains) power\r\n7: Solar\r\nThe same Resource Instance ID MUST be used to associate a given Power Source (Resource ID:6) with its Present Voltage (Resource ID:7) and its Present Current (Resource ID:8)"
+      },
+      "7": {
+        "id": "7",
+        "name": "Power Source Voltage",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Present voltage for each Available Power Sources Resource Instance. The unit used for this resource is in mV."
+      },
+      "8": {
+        "id": "8",
+        "name": "Power Source Current",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Present current for each Available Power Source. The unit used for this resource is in mA."
+      },
+      "9": {
+        "id": "9",
+        "name": "Battery Level",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "units": "/100",
+        "rangeEnumeration": "0..100",
+        "description": "Contains the current battery level as a percentage (with a range from 0 to 100). This value is only valid for the Device internal Battery if present (one Available Power Sources Resource Instance is 1)."
+      },
+      "10": {
+        "id": "10",
+        "name": "Memory Free",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Estimated current available amount of storage space which can store data and software in the LwM2M Device (expressed in kilobytes). Note: 1 kilobyte corresponds to 1000 bytes."
+      },
+      "11": {
+        "id": "11",
+        "name": "Error Code",
+        "type": "Integer",
+        "mandatory": true,
+        "operations": "R",
+        "rangeEnumeration": "0..32",
+        "description": "0=No error\r\n1=Low battery power\r\n2=External power supply off\r\n3=GPS module failure\r\n4=Low received signal strength\r\n5=Out of memory\r\n6=SMS failure\r\n7=IP connectivity failure\r\n8=Peripheral malfunction\r\n9..15=Reserved for future use\r\n16..32=Device specific error codes\r\n\r\nWhen the single Device Object Instance is initiated, there is only one error code Resource Instance whose value is equal to 0 that means no error. When the first error happens, the LwM2M Client changes error code Resource Instance to any non-zero value to indicate the error type. When any other error happens, a new error code Resource Instance is created. When an error associated with a Resource Instance is no longer present, that Resource Instance is deleted. When the single existing error is no longer present, the LwM2M Client returns to the original no error state where Instance 0 has value 0.\r\nThis error code Resource MAY be observed by the LwM2M Server. How to deal with LwM2M Client’s error report depends on the policy of the LwM2M Server. Error codes in between 16 and 32 are specific to the Device and may have different meanings among implementations."
+      },
+      "13": {
+        "id": "13",
+        "name": "Current Time",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "Current UNIX time of the LwM2M Client.\r\nThe LwM2M Client should be responsible to increase this time value as every second elapses.\r\nThe LwM2M Server is able to write this Resource to make the LwM2M Client synchronized with the LwM2M Server."
+      },
+      "14": {
+        "id": "14",
+        "name": "UTC Offset",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "Indicates the UTC offset currently in effect for this LwM2M Device. UTC+X [ISO 8601]."
+      },
+      "15": {
+        "id": "15",
+        "name": "Timezone",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "Indicates in which time zone the LwM2M Device is located, in IANA Timezone (TZ) database format."
+      },
+      "16": {
+        "id": "16",
+        "name": "Supported Binding and Modes",
+        "type": "String",
+        "mandatory": true,
+        "operations": "R",
+        "description": "Indicates which bindings and modes are supported in the LwM2M Client. The possible values are those listed in the LwM2M Core Specification."
+      },
+      "17": {
+        "id": "17",
+        "name": "Device Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Type of the device (manufacturer specified string: e.g. smart meters / dev Class / ...)"
+      },
+      "18": {
+        "id": "18",
+        "name": "Hardware Version",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Current hardware version of the device"
+      },
+      "19": {
+        "id": "19",
+        "name": "Software Version",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Current software version of the device (manufacturer specified string). On elaborated LwM2M device, SW could be split in 2 parts: a firmware one and a higher level software on top.\r\nBoth pieces of Software are together managed by LwM2M Firmware Update Object (Object ID 5)"
+      },
+      "20": {
+        "id": "20",
+        "name": "Battery Status",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..6",
+        "description": "This value is only valid for the Device Internal Battery if present (one Available Power Sources Resource Instance value is 1).\r\nBattery\r\nStatus\tMeaning\tDescription\r\n0\tNormal\tThe battery is operating normally and not on power.\r\n1\tCharging\tThe battery is currently charging.\r\n2\tCharge Complete\tThe battery is fully charged and still on power.\r\n3\tDamaged\tThe battery has some problem.\r\n4\tLow Battery\tThe battery is low on charge.\r\n5\tNot Installed\tThe battery is not installed.\r\n6\tUnknown\tThe battery information is not available."
+      },
+      "21": {
+        "id": "21",
+        "name": "Memory Total",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Total amount of storage space which can store data and software in the LwM2M Device (expressed in kilobytes).  Note: 1 kilobyte corresponds to 1000 bytes."
+      },
+      "22": {
+        "id": "22",
+        "name": "ExtDevInfo",
+        "type": "Objlnk",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Reference to external \"Device\" object instance containing information. For example, such an external device can be a Host Device, which is a device into which the Device containing the LwM2M client is embedded. This Resource may be used to retrieve information about the Host Device."
+      }
+    }
+  },
+  "6": {
+    "objectId": "6",
+    "name": "Location",
+    "description": "This LwM2M Object provides a range of location telemetry related information which can be queried by the LwM2M Server.",
+    "isSingleton": true,
+    "resources": {
+      "0": {
+        "id": "0",
+        "name": "Latitude",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "units": "lat",
+        "description": "The decimal notation of latitude, e.g. -43.5723 [World Geodetic System 1984]."
+      },
+      "1": {
+        "id": "1",
+        "name": "Longitude",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "units": "lon",
+        "description": "The decimal notation of longitude, e.g. 153.21760 [World Geodetic System 1984]."
+      },
+      "2": {
+        "id": "2",
+        "name": "Altitude",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "m",
+        "description": "The decimal notation of altitude in meters above sea level."
+      },
+      "3": {
+        "id": "3",
+        "name": "Radius",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "m",
+        "description": "The value in this resource indicates the radius of a circular area in meters. The circular area is used to describe uncertainty about a point for coordinates in a two-dimensional coordinate reference systems (CRS). The center point of a circular area is specified by using the Latitude and the Longitude Resources."
+      },
+      "4": {
+        "id": "4",
+        "name": "Velocity",
+        "type": "Opaque",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The velocity of the LwM2M Client, as defined in [3GPP-TS_23.032]."
+      },
+      "5": {
+        "id": "5",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": true,
+        "operations": "R",
+        "description": "The timestamp of when the location measurement was performed."
+      },
+      "6": {
+        "id": "6",
+        "name": "Speed",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "m/s",
+        "description": "Speed is the time rate of change in position of a LwM2M Client without regard for direction: the scalar component of velocity."
+      }
+    }
+  },
+  "3201": {
+    "objectId": "3201",
+    "name": "Digital Output",
+    "description": "Generic digital output for non-specific actuators",
+    "isSingleton": false,
+    "resources": {
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5550": {
+        "id": "5550",
+        "name": "Digital Output State",
+        "type": "Boolean",
+        "mandatory": true,
+        "operations": "RW",
+        "description": "The current state of a digital output."
+      },
+      "5551": {
+        "id": "5551",
+        "name": "Digital Output Polarity",
+        "type": "Boolean",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The polarity of the digital output as a Boolean (False = Normal, True = Reversed)."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  },
+  "3202": {
+    "objectId": "3202",
+    "name": "Analog Input",
+    "description": "Generic analog input for non-specific sensors",
+    "isSingleton": false,
+    "resources": {
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5600": {
+        "id": "5600",
+        "name": "Analog Input Current Value",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "description": "The current value of the analog input."
+      },
+      "5601": {
+        "id": "5601",
+        "name": "Min Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value measured by the sensor since power ON or reset."
+      },
+      "5602": {
+        "id": "5602",
+        "name": "Max Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value measured by the sensor since power ON or reset."
+      },
+      "5603": {
+        "id": "5603",
+        "name": "Min Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value that can be measured by the sensor."
+      },
+      "5604": {
+        "id": "5604",
+        "name": "Max Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value that can be measured by the sensor."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "5751": {
+        "id": "5751",
+        "name": "Sensor Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The type of the sensor (for instance PIR type)."
+      },
+      "6042": {
+        "id": "6042",
+        "name": "Measurement Quality Indicator",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..23",
+        "description": "Measurement quality indicator reported by a smart sensor. 0: UNCHECKED No quality checks were done because they do not exist or can not be applied. 1: REJECTED WITH CERTAINTY The measured value is invalid. 2: REJECTED WITH PROBABILITY The measured value is likely invalid. 3: ACCEPTED BUT SUSPICIOUS The measured value is likely OK. 4: ACCEPTED The measured value is OK. 5-15: Reserved for future extensions. 16-23: Vendor specific measurement quality."
+      },
+      "6049": {
+        "id": "6049",
+        "name": "Measurement Quality Level",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..100",
+        "description": "Measurement quality level reported by a smart sensor. Quality level 100 means that the measurement has fully passed quality check algorithms. Smaller quality levels mean that quality has decreased and the measurement has only partially passed quality check algorithms. The smaller the quality level, the more caution should be used by the application when using the measurement. When the quality level is 0 it means that the measurement should certainly be rejected."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  },
+  "3203": {
+    "objectId": "3203",
+    "name": "Analog Output",
+    "description": "This IPSO object is a generic object that can be used with any kind of analog output interface.",
+    "isSingleton": false,
+    "resources": {
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5603": {
+        "id": "5603",
+        "name": "Min Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value that can be measured by the sensor."
+      },
+      "5604": {
+        "id": "5604",
+        "name": "Max Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value that can be measured by the sensor."
+      },
+      "5650": {
+        "id": "5650",
+        "name": "Analog Output Current Value",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "RW",
+        "rangeEnumeration": "0..1",
+        "description": "The current value of the analog output."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  },
+  "3300": {
+    "objectId": "3300",
+    "name": "Generic Sensor",
+    "description": "This IPSO object allows the description of a generic sensor. It is based on the description of a value and a unit according to the SenML specification. Thus, any type of value defined within this specification can be reported using this object. This object may be used as a generic object if a dedicated one does not exist.",
+    "isSingleton": false,
+    "resources": {
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5601": {
+        "id": "5601",
+        "name": "Min Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value measured by the sensor since power ON or reset."
+      },
+      "5602": {
+        "id": "5602",
+        "name": "Max Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value measured by the sensor since power ON or reset."
+      },
+      "5603": {
+        "id": "5603",
+        "name": "Min Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value that can be measured by the sensor."
+      },
+      "5604": {
+        "id": "5604",
+        "name": "Max Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value that can be measured by the sensor."
+      },
+      "5700": {
+        "id": "5700",
+        "name": "Sensor Value",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "description": "Last or Current Measured Value from the Sensor."
+      },
+      "5701": {
+        "id": "5701",
+        "name": "Sensor Units",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Measurement Units Definition."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "5751": {
+        "id": "5751",
+        "name": "Sensor Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The type of the sensor (for instance PIR type)."
+      },
+      "6042": {
+        "id": "6042",
+        "name": "Measurement Quality Indicator",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..23",
+        "description": "Measurement quality indicator reported by a smart sensor. 0: UNCHECKED No quality checks were done because they do not exist or can not be applied. 1: REJECTED WITH CERTAINTY The measured value is invalid. 2: REJECTED WITH PROBABILITY The measured value is likely invalid. 3: ACCEPTED BUT SUSPICIOUS The measured value is likely OK. 4: ACCEPTED The measured value is OK. 5-15: Reserved for future extensions. 16-23: Vendor specific measurement quality."
+      },
+      "6049": {
+        "id": "6049",
+        "name": "Measurement Quality Level",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..100",
+        "description": "Measurement quality level reported by a smart sensor. Quality level 100 means that the measurement has fully passed quality check algorithms. Smaller quality levels mean that quality has decreased and the measurement has only partially passed quality check algorithms. The smaller the quality level, the more caution should be used by the application when using the measurement. When the quality level is 0 it means that the measurement should certainly be rejected."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  },
+  "3303": {
+    "objectId": "3303",
+    "name": "Temperature",
+    "description": "This IPSO object should be used with a temperature sensor to report a temperature measurement.  It also provides resources for minimum/maximum measured values and the minimum/maximum range that can be measured by the temperature sensor. An example measurement unit is degrees Celsius.",
+    "isSingleton": false,
+    "resources": {
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5601": {
+        "id": "5601",
+        "name": "Min Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value measured by the sensor since power ON or reset."
+      },
+      "5602": {
+        "id": "5602",
+        "name": "Max Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value measured by the sensor since power ON or reset."
+      },
+      "5603": {
+        "id": "5603",
+        "name": "Min Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value that can be measured by the sensor."
+      },
+      "5604": {
+        "id": "5604",
+        "name": "Max Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value that can be measured by the sensor."
+      },
+      "5700": {
+        "id": "5700",
+        "name": "Sensor Value",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "description": "Last or Current Measured Value from the Sensor."
+      },
+      "5701": {
+        "id": "5701",
+        "name": "Sensor Units",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Measurement Units Definition."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "6042": {
+        "id": "6042",
+        "name": "Measurement Quality Indicator",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..23",
+        "description": "Measurement quality indicator reported by a smart sensor. 0: UNCHECKED No quality checks were done because they do not exist or can not be applied. 1: REJECTED WITH CERTAINTY The measured value is invalid. 2: REJECTED WITH PROBABILITY The measured value is likely invalid. 3: ACCEPTED BUT SUSPICIOUS The measured value is likely OK. 4: ACCEPTED The measured value is OK. 5-15: Reserved for future extensions. 16-23: Vendor specific measurement quality."
+      },
+      "6049": {
+        "id": "6049",
+        "name": "Measurement Quality Level",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..100",
+        "description": "Measurement quality level reported by a smart sensor. Quality level 100 means that the measurement has fully passed quality check algorithms. Smaller quality levels mean that quality has decreased and the measurement has only partially passed quality check algorithms. The smaller the quality level, the more caution should be used by the application when using the measurement. When the quality level is 0 it means that the measurement should certainly be rejected."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  },
+  "3311": {
+    "objectId": "3311",
+    "name": "Light Control",
+    "description": "This Object is used to control a light source, such as a LED or other light.  It allows a light to be turned on or off and its dimmer setting to be control as a % between 0 and 100. An optional colour setting enables a string to be used to indicate the desired colour.",
+    "isSingleton": false,
+    "resources": {
+      "5701": {
+        "id": "5701",
+        "name": "Sensor Units",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Measurement Units Definition."
+      },
+      "5706": {
+        "id": "5706",
+        "name": "Colour",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "A string representing a value in some color space."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "5805": {
+        "id": "5805",
+        "name": "Cumulative active power",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "Wh",
+        "description": "The cumulative active power since the last cumulative energy reset or device start."
+      },
+      "5820": {
+        "id": "5820",
+        "name": "Power factor",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "If applicable, the power factor of the current consumption."
+      },
+      "5850": {
+        "id": "5850",
+        "name": "On/Off",
+        "type": "Boolean",
+        "mandatory": true,
+        "operations": "RW",
+        "description": "On/off control. Boolean value where True is On and False is Off."
+      },
+      "5851": {
+        "id": "5851",
+        "name": "Dimmer",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "RW",
+        "units": "/100",
+        "rangeEnumeration": "0..100",
+        "description": "This resource represents a dimmer setting, which has an Integer value between 0 and 100 as a percentage."
+      },
+      "5852": {
+        "id": "5852",
+        "name": "On time",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "RW",
+        "units": "s",
+        "description": "The time in seconds that the device has been on. Writing a value of 0 resets the counter."
+      }
+    }
+  },
+  "3316": {
+    "objectId": "3316",
+    "name": "Voltage",
+    "description": "This IPSO object should be used with voltmeter sensor to report measured voltage between two points.  It also provides resources for minimum and maximum measured values, as well as the minimum and maximum range that can be measured by the sensor. An example measurement unit is volts.",
+    "isSingleton": false,
+    "resources": {
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5601": {
+        "id": "5601",
+        "name": "Min Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value measured by the sensor since power ON or reset."
+      },
+      "5602": {
+        "id": "5602",
+        "name": "Max Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value measured by the sensor since power ON or reset."
+      },
+      "5603": {
+        "id": "5603",
+        "name": "Min Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value that can be measured by the sensor."
+      },
+      "5604": {
+        "id": "5604",
+        "name": "Max Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value that can be measured by the sensor."
+      },
+      "5700": {
+        "id": "5700",
+        "name": "Sensor Value",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "description": "Last or Current Measured Value from the Sensor."
+      },
+      "5701": {
+        "id": "5701",
+        "name": "Sensor Units",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Measurement Units Definition."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "5821": {
+        "id": "5821",
+        "name": "Current Calibration",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "Read or Write the current calibration coefficient."
+      },
+      "6042": {
+        "id": "6042",
+        "name": "Measurement Quality Indicator",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..23",
+        "description": "Measurement quality indicator reported by a smart sensor. 0: UNCHECKED No quality checks were done because they do not exist or can not be applied. 1: REJECTED WITH CERTAINTY The measured value is invalid. 2: REJECTED WITH PROBABILITY The measured value is likely invalid. 3: ACCEPTED BUT SUSPICIOUS The measured value is likely OK. 4: ACCEPTED The measured value is OK. 5-15: Reserved for future extensions. 16-23: Vendor specific measurement quality."
+      },
+      "6049": {
+        "id": "6049",
+        "name": "Measurement Quality Level",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..100",
+        "description": "Measurement quality level reported by a smart sensor. Quality level 100 means that the measurement has fully passed quality check algorithms. Smaller quality levels mean that quality has decreased and the measurement has only partially passed quality check algorithms. The smaller the quality level, the more caution should be used by the application when using the measurement. When the quality level is 0 it means that the measurement should certainly be rejected."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  },
+  "3317": {
+    "objectId": "3317",
+    "name": "Current",
+    "description": "This IPSO object should be used with an ammeter to report measured electric current in amperes. It also provides resources for minimum and maximum measured values, as well as the minimum and maximum range that can be measured by the sensor. An example measurement unit is ampere.",
+    "isSingleton": false,
+    "resources": {
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5601": {
+        "id": "5601",
+        "name": "Min Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value measured by the sensor since power ON or reset."
+      },
+      "5602": {
+        "id": "5602",
+        "name": "Max Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value measured by the sensor since power ON or reset."
+      },
+      "5603": {
+        "id": "5603",
+        "name": "Min Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value that can be measured by the sensor."
+      },
+      "5604": {
+        "id": "5604",
+        "name": "Max Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value that can be measured by the sensor."
+      },
+      "5700": {
+        "id": "5700",
+        "name": "Sensor Value",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "description": "Last or Current Measured Value from the Sensor."
+      },
+      "5701": {
+        "id": "5701",
+        "name": "Sensor Units",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Measurement Units Definition."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "5821": {
+        "id": "5821",
+        "name": "Current Calibration",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "Read or Write the current calibration coefficient."
+      },
+      "6042": {
+        "id": "6042",
+        "name": "Measurement Quality Indicator",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..23",
+        "description": "Measurement quality indicator reported by a smart sensor. 0: UNCHECKED No quality checks were done because they do not exist or can not be applied. 1: REJECTED WITH CERTAINTY The measured value is invalid. 2: REJECTED WITH PROBABILITY The measured value is likely invalid. 3: ACCEPTED BUT SUSPICIOUS The measured value is likely OK. 4: ACCEPTED The measured value is OK. 5-15: Reserved for future extensions. 16-23: Vendor specific measurement quality."
+      },
+      "6049": {
+        "id": "6049",
+        "name": "Measurement Quality Level",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..100",
+        "description": "Measurement quality level reported by a smart sensor. Quality level 100 means that the measurement has fully passed quality check algorithms. Smaller quality levels mean that quality has decreased and the measurement has only partially passed quality check algorithms. The smaller the quality level, the more caution should be used by the application when using the measurement. When the quality level is 0 it means that the measurement should certainly be rejected."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  },
+  "3322": {
+    "objectId": "3322",
+    "name": "Load",
+    "description": "This IPSO object should be used with a load sensor (as in a scale) to report the applied weight or force. It also provides resources for minimum and maximum measured values, as well as the minimum and maximum range that can be measured by the sensor. An example measurement unit is kilograms.",
+    "isSingleton": false,
+    "resources": {
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5601": {
+        "id": "5601",
+        "name": "Min Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value measured by the sensor since power ON or reset."
+      },
+      "5602": {
+        "id": "5602",
+        "name": "Max Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value measured by the sensor since power ON or reset."
+      },
+      "5603": {
+        "id": "5603",
+        "name": "Min Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value that can be measured by the sensor."
+      },
+      "5604": {
+        "id": "5604",
+        "name": "Max Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value that can be measured by the sensor."
+      },
+      "5700": {
+        "id": "5700",
+        "name": "Sensor Value",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "description": "Last or Current Measured Value from the Sensor."
+      },
+      "5701": {
+        "id": "5701",
+        "name": "Sensor Units",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Measurement Units Definition."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "5821": {
+        "id": "5821",
+        "name": "Current Calibration",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "Read or Write the current calibration coefficient."
+      },
+      "6042": {
+        "id": "6042",
+        "name": "Measurement Quality Indicator",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..23",
+        "description": "Measurement quality indicator reported by a smart sensor. 0: UNCHECKED No quality checks were done because they do not exist or can not be applied. 1: REJECTED WITH CERTAINTY The measured value is invalid. 2: REJECTED WITH PROBABILITY The measured value is likely invalid. 3: ACCEPTED BUT SUSPICIOUS The measured value is likely OK. 4: ACCEPTED The measured value is OK. 5-15: Reserved for future extensions. 16-23: Vendor specific measurement quality."
+      },
+      "6049": {
+        "id": "6049",
+        "name": "Measurement Quality Level",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..100",
+        "description": "Measurement quality level reported by a smart sensor. Quality level 100 means that the measurement has fully passed quality check algorithms. Smaller quality levels mean that quality has decreased and the measurement has only partially passed quality check algorithms. The smaller the quality level, the more caution should be used by the application when using the measurement. When the quality level is 0 it means that the measurement should certainly be rejected."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  },
+  "3323": {
+    "objectId": "3323",
+    "name": "Pressure",
+    "description": "This IPSO object should be used to report pressure measurements. It also provides resources for minimum and maximum measured values, as well as the minimum and maximum range that can be measured by the sensor. An example measurement unit is pascals.",
+    "isSingleton": false,
+    "resources": {
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5601": {
+        "id": "5601",
+        "name": "Min Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value measured by the sensor since power ON or reset."
+      },
+      "5602": {
+        "id": "5602",
+        "name": "Max Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value measured by the sensor since power ON or reset."
+      },
+      "5603": {
+        "id": "5603",
+        "name": "Min Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value that can be measured by the sensor."
+      },
+      "5604": {
+        "id": "5604",
+        "name": "Max Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value that can be measured by the sensor."
+      },
+      "5700": {
+        "id": "5700",
+        "name": "Sensor Value",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "description": "Last or Current Measured Value from the Sensor."
+      },
+      "5701": {
+        "id": "5701",
+        "name": "Sensor Units",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Measurement Units Definition."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "5821": {
+        "id": "5821",
+        "name": "Current Calibration",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "Read or Write the current calibration coefficient."
+      },
+      "6042": {
+        "id": "6042",
+        "name": "Measurement Quality Indicator",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..23",
+        "description": "Measurement quality indicator reported by a smart sensor. 0: UNCHECKED No quality checks were done because they do not exist or can not be applied. 1: REJECTED WITH CERTAINTY The measured value is invalid. 2: REJECTED WITH PROBABILITY The measured value is likely invalid. 3: ACCEPTED BUT SUSPICIOUS The measured value is likely OK. 4: ACCEPTED The measured value is OK. 5-15: Reserved for future extensions. 16-23: Vendor specific measurement quality."
+      },
+      "6049": {
+        "id": "6049",
+        "name": "Measurement Quality Level",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..100",
+        "description": "Measurement quality level reported by a smart sensor. Quality level 100 means that the measurement has fully passed quality check algorithms. Smaller quality levels mean that quality has decreased and the measurement has only partially passed quality check algorithms. The smaller the quality level, the more caution should be used by the application when using the measurement. When the quality level is 0 it means that the measurement should certainly be rejected."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  },
+  "3328": {
+    "objectId": "3328",
+    "name": "Power",
+    "description": "This IPSO object should be used to report power measurements. It also provides resources for minimum and maximum measured values, as well as the minimum and maximum range that can be measured by the sensor. An example measurement unit is Watts. This object may be used for either real power or apparent power measurements.",
+    "isSingleton": false,
+    "resources": {
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5601": {
+        "id": "5601",
+        "name": "Min Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value measured by the sensor since power ON or reset."
+      },
+      "5602": {
+        "id": "5602",
+        "name": "Max Measured Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value measured by the sensor since power ON or reset."
+      },
+      "5603": {
+        "id": "5603",
+        "name": "Min Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The minimum value that can be measured by the sensor."
+      },
+      "5604": {
+        "id": "5604",
+        "name": "Max Range Value",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The maximum value that can be measured by the sensor."
+      },
+      "5700": {
+        "id": "5700",
+        "name": "Sensor Value",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "description": "Last or Current Measured Value from the Sensor."
+      },
+      "5701": {
+        "id": "5701",
+        "name": "Sensor Units",
+        "type": "String",
+        "mandatory": false,
+        "operations": "R",
+        "description": "Measurement Units Definition."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "5821": {
+        "id": "5821",
+        "name": "Current Calibration",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "Read or Write the current calibration coefficient."
+      },
+      "6042": {
+        "id": "6042",
+        "name": "Measurement Quality Indicator",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..23",
+        "description": "Measurement quality indicator reported by a smart sensor. 0: UNCHECKED No quality checks were done because they do not exist or can not be applied. 1: REJECTED WITH CERTAINTY The measured value is invalid. 2: REJECTED WITH PROBABILITY The measured value is likely invalid. 3: ACCEPTED BUT SUSPICIOUS The measured value is likely OK. 4: ACCEPTED The measured value is OK. 5-15: Reserved for future extensions. 16-23: Vendor specific measurement quality."
+      },
+      "6049": {
+        "id": "6049",
+        "name": "Measurement Quality Level",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..100",
+        "description": "Measurement quality level reported by a smart sensor. Quality level 100 means that the measurement has fully passed quality check algorithms. Smaller quality levels mean that quality has decreased and the measurement has only partially passed quality check algorithms. The smaller the quality level, the more caution should be used by the application when using the measurement. When the quality level is 0 it means that the measurement should certainly be rejected."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  },
+  "3336": {
+    "objectId": "3336",
+    "name": "Location",
+    "description": "This IPSO object represents GPS coordinates. This object is compatible with the LwM2M management object for location, but uses reusable resources.",
+    "isSingleton": false,
+    "resources": {
+      "5517": {
+        "id": "5517",
+        "name": "Velocity",
+        "type": "Opaque",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The velocity of the device as defined in 3GPP 23.032 GAD specification. This set of values may not be available if the device is static."
+      },
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5705": {
+        "id": "5705",
+        "name": "Compass Direction",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "deg",
+        "rangeEnumeration": "0..360",
+        "description": "The measured compass direction."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "6042": {
+        "id": "6042",
+        "name": "Measurement Quality Indicator",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..23",
+        "description": "Measurement quality indicator reported by a smart sensor. 0: UNCHECKED No quality checks were done because they do not exist or can not be applied. 1: REJECTED WITH CERTAINTY The measured value is invalid. 2: REJECTED WITH PROBABILITY The measured value is likely invalid. 3: ACCEPTED BUT SUSPICIOUS The measured value is likely OK. 4: ACCEPTED The measured value is OK. 5-15: Reserved for future extensions. 16-23: Vendor specific measurement quality."
+      },
+      "6049": {
+        "id": "6049",
+        "name": "Measurement Quality Level",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "rangeEnumeration": "0..100",
+        "description": "Measurement quality level reported by a smart sensor. Quality level 100 means that the measurement has fully passed quality check algorithms. Smaller quality levels mean that quality has decreased and the measurement has only partially passed quality check algorithms. The smaller the quality level, the more caution should be used by the application when using the measurement. When the quality level is 0 it means that the measurement should certainly be rejected."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      },
+      "6051": {
+        "id": "6051",
+        "name": "Numeric Latitude",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "units": "lat",
+        "description": "The decimal notation of latitude, e.g. -43.5723 (World Geodetic System 1984)."
+      },
+      "6052": {
+        "id": "6052",
+        "name": "Numeric Longitude",
+        "type": "Float",
+        "mandatory": true,
+        "operations": "R",
+        "units": "lon",
+        "description": "The decimal notation of longitude, e.g. 153.21760 (World Geodetic System 1984)."
+      },
+      "6053": {
+        "id": "6053",
+        "name": "Numeric Uncertainty",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "m",
+        "description": "The accuracy of the position in meters."
+      }
+    }
+  },
+  "3342": {
+    "objectId": "3342",
+    "name": "On/Off switch",
+    "description": "This IPSO object should be used with an On/Off switch to report the state of the switch.",
+    "isSingleton": false,
+    "resources": {
+      "5500": {
+        "id": "5500",
+        "name": "Digital Input State",
+        "type": "Boolean",
+        "mandatory": true,
+        "operations": "R",
+        "description": "The current state of a digital input."
+      },
+      "5501": {
+        "id": "5501",
+        "name": "Digital Input Counter",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The cumulative value of active state detected."
+      },
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "5852": {
+        "id": "5852",
+        "name": "On time",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "RW",
+        "units": "s",
+        "description": "The time in seconds that the device has been on. Writing a value of 0 resets the counter."
+      },
+      "5854": {
+        "id": "5854",
+        "name": "Off Time",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "RW",
+        "units": "s",
+        "description": "The time in seconds in the off state. Writing a value of 0 resets the counter."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  },
+  "3347": {
+    "objectId": "3347",
+    "name": "Push button",
+    "description": "This IPSO object is used to report the state of a momentary action push button control and to count the number of times the control has been operated since the last observation.",
+    "isSingleton": false,
+    "resources": {
+      "5500": {
+        "id": "5500",
+        "name": "Digital Input State",
+        "type": "Boolean",
+        "mandatory": true,
+        "operations": "R",
+        "description": "The current state of a digital input."
+      },
+      "5501": {
+        "id": "5501",
+        "name": "Digital Input Counter",
+        "type": "Integer",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The cumulative value of active state detected."
+      },
+      "5518": {
+        "id": "5518",
+        "name": "Timestamp",
+        "type": "Time",
+        "mandatory": false,
+        "operations": "R",
+        "description": "The timestamp of when the measurement was performed."
+      },
+      "5750": {
+        "id": "5750",
+        "name": "Application Type",
+        "type": "String",
+        "mandatory": false,
+        "operations": "RW",
+        "description": "The application type of the sensor or actuator as a string depending on the use case."
+      },
+      "6050": {
+        "id": "6050",
+        "name": "Fractional Timestamp",
+        "type": "Float",
+        "mandatory": false,
+        "operations": "R",
+        "units": "s",
+        "rangeEnumeration": "0..1",
+        "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+      }
+    }
+  }
+}

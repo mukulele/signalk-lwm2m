@@ -1,0 +1,367 @@
+{
+  "lwm2m": {
+    "objects": {
+      "3": {
+        "0": {
+          "0": {
+            "type": "STRING",
+            "acl": "R",
+            "value": "",
+            "description": "Human readable manufacturer name"
+          },
+          "1": {
+            "type": "STRING",
+            "acl": "R",
+            "value": "",
+            "description": "A model identifier (manufacturer specified string)"
+          },
+          "2": {
+            "type": "STRING",
+            "acl": "R",
+            "value": "",
+            "description": "Serial Number"
+          },
+          "3": {
+            "type": "STRING",
+            "acl": "R",
+            "value": "",
+            "description": "Current firmware version of the Device.The Firmware Management function could rely on this resource."
+          },
+          "6": {
+            "type": "INTEGER",
+            "acl": "R",
+            "value": 0,
+            "description": "0: DC power\r\n1: Internal Battery\r\n2: External Battery\r\n3: Fuel Cell\r\n4: Power over Ethernet\r\n5: USB\r\n6: AC (Mains) power\r\n7: Solar\r\nThe same Resource Instance ID MUST be used to associate a given Power Source (Resource ID:6) with its Present Voltage (Resource ID:7) and its Present Current (Resource ID:8)"
+          },
+          "7": {
+            "type": "INTEGER",
+            "acl": "R",
+            "value": 0,
+            "description": "Present voltage for each Available Power Sources Resource Instance. The unit used for this resource is in mV."
+          },
+          "8": {
+            "type": "INTEGER",
+            "acl": "R",
+            "value": 0,
+            "description": "Present current for each Available Power Source. The unit used for this resource is in mA."
+          },
+          "9": {
+            "type": "INTEGER",
+            "acl": "R",
+            "value": 0,
+            "description": "Contains the current battery level as a percentage (with a range from 0 to 100). This value is only valid for the Device internal Battery if present (one Available Power Sources Resource Instance is 1)."
+          },
+          "10": {
+            "type": "INTEGER",
+            "acl": "R",
+            "value": 0,
+            "description": "Estimated current available amount of storage space which can store data and software in the LwM2M Device (expressed in kilobytes). Note: 1 kilobyte corresponds to 1000 bytes."
+          },
+          "11": {
+            "type": "INTEGER",
+            "acl": "R",
+            "value": 0,
+            "description": "0=No error\r\n1=Low battery power\r\n2=External power supply off\r\n3=GPS module failure\r\n4=Low received signal strength\r\n5=Out of memory\r\n6=SMS failure\r\n7=IP connectivity failure\r\n8=Peripheral malfunction\r\n9..15=Reserved for future use\r\n16..32=Device specific error codes\r\n\r\nWhen the single Device Object Instance is initiated, there is only one error code Resource Instance whose value is equal to 0 that means no error. When the first error happens, the LwM2M Client changes error code Resource Instance to any non-zero value to indicate the error type. When any other error happens, a new error code Resource Instance is created. When an error associated with a Resource Instance is no longer present, that Resource Instance is deleted. When the single existing error is no longer present, the LwM2M Client returns to the original no error state where Instance 0 has value 0.\r\nThis error code Resource MAY be observed by the LwM2M Server. How to deal with LwM2M Client’s error report depends on the policy of the LwM2M Server. Error codes in between 16 and 32 are specific to the Device and may have different meanings among implementations."
+          },
+          "13": {
+            "type": "INTEGER",
+            "acl": "RW",
+            "value": 0,
+            "description": "Current UNIX time of the LwM2M Client.\r\nThe LwM2M Client should be responsible to increase this time value as every second elapses.\r\nThe LwM2M Server is able to write this Resource to make the LwM2M Client synchronized with the LwM2M Server."
+          },
+          "14": {
+            "type": "STRING",
+            "acl": "RW",
+            "value": "",
+            "description": "Indicates the UTC offset currently in effect for this LwM2M Device. UTC+X [ISO 8601]."
+          },
+          "15": {
+            "type": "STRING",
+            "acl": "RW",
+            "value": "",
+            "description": "Indicates in which time zone the LwM2M Device is located, in IANA Timezone (TZ) database format."
+          },
+          "16": {
+            "type": "STRING",
+            "acl": "R",
+            "value": "",
+            "description": "Indicates which bindings and modes are supported in the LwM2M Client. The possible values are those listed in the LwM2M Core Specification."
+          },
+          "17": {
+            "type": "STRING",
+            "acl": "R",
+            "value": "",
+            "description": "Type of the device (manufacturer specified string: e.g. smart meters / dev Class / ...)"
+          },
+          "18": {
+            "type": "STRING",
+            "acl": "R",
+            "value": "",
+            "description": "Current hardware version of the device"
+          },
+          "19": {
+            "type": "STRING",
+            "acl": "R",
+            "value": "",
+            "description": "Current software version of the device (manufacturer specified string). On elaborated LwM2M device, SW could be split in 2 parts: a firmware one and a higher level software on top.\r\nBoth pieces of Software are together managed by LwM2M Firmware Update Object (Object ID 5)"
+          },
+          "20": {
+            "type": "INTEGER",
+            "acl": "R",
+            "value": 0,
+            "description": "This value is only valid for the Device Internal Battery if present (one Available Power Sources Resource Instance value is 1).\r\nBattery\r\nStatus\tMeaning\tDescription\r\n0\tNormal\tThe battery is operating normally and not on power.\r\n1\tCharging\tThe battery is currently charging.\r\n2\tCharge Complete\tThe battery is fully charged and still on power.\r\n3\tDamaged\tThe battery has some problem.\r\n4\tLow Battery\tThe battery is low on charge.\r\n5\tNot Installed\tThe battery is not installed.\r\n6\tUnknown\tThe battery information is not available."
+          },
+          "21": {
+            "type": "INTEGER",
+            "acl": "R",
+            "value": 0,
+            "description": "Total amount of storage space which can store data and software in the LwM2M Device (expressed in kilobytes).  Note: 1 kilobyte corresponds to 1000 bytes."
+          },
+          "22": {
+            "type": "OBJECT_LINK",
+            "acl": "R",
+            "value": "0:0",
+            "description": "Reference to external \"Device\" object instance containing information. For example, such an external device can be a Host Device, which is a device into which the Device containing the LwM2M client is embedded. This Resource may be used to retrieve information about the Host Device."
+          },
+          "description": "Device Instance 0"
+        },
+        "description": "Device",
+        "isSingleton": true
+      },
+      "6": {
+        "0": {
+          "0": {
+            "type": "FLOAT",
+            "acl": "R",
+            "value": 0,
+            "description": "The decimal notation of latitude, e.g. -43.5723 [World Geodetic System 1984]."
+          },
+          "1": {
+            "type": "FLOAT",
+            "acl": "R",
+            "value": 0,
+            "description": "The decimal notation of longitude, e.g. 153.21760 [World Geodetic System 1984]."
+          },
+          "2": {
+            "type": "FLOAT",
+            "acl": "R",
+            "value": 0,
+            "description": "The decimal notation of altitude in meters above sea level."
+          },
+          "3": {
+            "type": "FLOAT",
+            "acl": "R",
+            "value": 0,
+            "description": "The value in this resource indicates the radius of a circular area in meters. The circular area is used to describe uncertainty about a point for coordinates in a two-dimensional coordinate reference systems (CRS). The center point of a circular area is specified by using the Latitude and the Longitude Resources."
+          },
+          "4": {
+            "type": "FUNCTION",
+            "description": "The velocity of the LwM2M Client, as defined in [3GPP-TS_23.032]."
+          },
+          "5": {
+            "type": "INTEGER",
+            "acl": "R",
+            "value": 0,
+            "description": "The timestamp of when the location measurement was performed."
+          },
+          "6": {
+            "type": "FLOAT",
+            "acl": "R",
+            "value": 0,
+            "description": "Speed is the time rate of change in position of a LwM2M Client without regard for direction: the scalar component of velocity."
+          },
+          "description": "Location Instance 0"
+        },
+        "description": "Location",
+        "isSingleton": true
+      },
+      "3201": {
+        "0": {
+          "5518": {
+            "type": "INTEGER",
+            "acl": "R",
+            "value": 0,
+            "description": "The timestamp of when the measurement was performed."
+          },
+          "5550": {
+            "type": "BOOLEAN",
+            "acl": "RW",
+            "value": false,
+            "description": "The current state of a digital output."
+          },
+          "5551": {
+            "type": "BOOLEAN",
+            "acl": "RW",
+            "value": false,
+            "description": "The polarity of the digital output as a Boolean (False = Normal, True = Reversed)."
+          },
+          "5750": {
+            "type": "STRING",
+            "acl": "RW",
+            "value": "",
+            "description": "The application type of the sensor or actuator as a string depending on the use case."
+          },
+          "6050": {
+            "type": "FLOAT",
+            "acl": "R",
+            "value": 0,
+            "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+          },
+          "description": "Digital Output Instance 0"
+        },
+        "1": {
+          "5518": {
+            "type": "INTEGER",
+            "acl": "R",
+            "value": 0,
+            "description": "The timestamp of when the measurement was performed."
+          },
+          "5550": {
+            "type": "BOOLEAN",
+            "acl": "RW",
+            "value": false,
+            "description": "The current state of a digital output."
+          },
+          "5551": {
+            "type": "BOOLEAN",
+            "acl": "RW",
+            "value": false,
+            "description": "The polarity of the digital output as a Boolean (False = Normal, True = Reversed)."
+          },
+          "5750": {
+            "type": "STRING",
+            "acl": "RW",
+            "value": "",
+            "description": "The application type of the sensor or actuator as a string depending on the use case."
+          },
+          "6050": {
+            "type": "FLOAT",
+            "acl": "R",
+            "value": 0,
+            "description": "Fractional part of the timestamp when sub-second precision is used (e.g., 0.23 for 230 ms)."
+          },
+          "description": "Digital Output Instance 1"
+        },
+        "description": "Digital Output",
+        "isSingleton": false
+      },
+      "3336": {
+        "0": {
+          "5517": {
+            "type": "Opaque",
+            "acl": "R",
+            "value": "",
+            "description": "Velocity"
+          },
+          "5518": {
+            "type": "Time",
+            "acl": "R",
+            "value": "",
+            "description": "Timestamp"
+          },
+          "5705": {
+            "type": "Float",
+            "acl": "R",
+            "value": "",
+            "description": "Compass Direction"
+          },
+          "5750": {
+            "type": "String",
+            "acl": "RW",
+            "value": "",
+            "description": "Application Type"
+          },
+          "6042": {
+            "type": "Integer",
+            "acl": "R",
+            "value": "",
+            "description": "Measurement Quality Indicator"
+          },
+          "6049": {
+            "type": "Integer",
+            "acl": "R",
+            "value": "",
+            "description": "Measurement Quality Level"
+          },
+          "6050": {
+            "type": "Float",
+            "acl": "R",
+            "value": "",
+            "description": "Fractional Timestamp"
+          },
+          "6051": {
+            "type": "Float",
+            "acl": "R",
+            "value": "",
+            "description": "Numeric Latitude"
+          },
+          "6052": {
+            "type": "Float",
+            "acl": "R",
+            "value": "",
+            "description": "Numeric Longitude"
+          },
+          "6053": {
+            "type": "Float",
+            "acl": "R",
+            "value": "",
+            "description": "Numeric Uncertainty"
+          },
+          "description": "Location Instance 0"
+        },
+        "description": "Location",
+        "isSingleton": false
+      },
+      "3342": {
+        "0": {
+          "5500": {
+            "type": "Boolean",
+            "acl": "R",
+            "value": "",
+            "description": "Digital Input State",
+            "signalk_path": "electrical.switches.anchorLight.state"
+          },
+          "5501": {
+            "type": "Integer",
+            "acl": "R",
+            "value": "",
+            "description": "Digital Input Counter"
+          },
+          "5518": {
+            "type": "Time",
+            "acl": "R",
+            "value": "",
+            "description": "Timestamp"
+          },
+          "5750": {
+            "type": "String",
+            "acl": "RW",
+            "value": "",
+            "description": "Application Type"
+          },
+          "5852": {
+            "type": "Integer",
+            "acl": "RW",
+            "value": "",
+            "description": "On time"
+          },
+          "5854": {
+            "type": "Integer",
+            "acl": "RW",
+            "value": "",
+            "description": "Off Time"
+          },
+          "6050": {
+            "type": "Float",
+            "acl": "R",
+            "value": "",
+            "description": "Fractional Timestamp"
+          },
+          "description": "On/Off switch Instance 0"
+        },
+        "description": "On/Off switch",
+        "isSingleton": false
+      }
+    }
+  }
+}

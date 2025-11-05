@@ -1,0 +1,896 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LwM2M Objects Browser</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #007acc;
+            padding-bottom: 15px;
+            position: relative;
+        }
+        
+        .gear-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            margin-left: 15px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .gear-icon:hover {
+            color: #007acc;
+            transform: rotate(90deg);
+        }
+        
+        .objects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .object-button {
+            background: linear-gradient(135deg, #007acc, #005c99);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        
+        .object-button:hover {
+            background: linear-gradient(135deg, #005c99, #004577);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .object-id {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .object-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .error {
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #666;
+        }
+
+        .info {
+            background-color: #f0f7ff;
+            color: #007acc;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #007acc;
+        }
+
+        .details-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .details-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+            min-width: 600px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .resource-card {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #fafafa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .resource-card:hover {
+            background-color: #f0f7ff;
+            border-color: #007acc;
+            box-shadow: 0 2px 8px rgba(0,122,204,0.2);
+        }
+
+        .selected-instance {
+            background-color: #e6f3ff !important;
+            border-left: 4px solid #007acc !important;
+        }
+
+        .selected-instance:hover {
+            background-color: #d6e9ff !important;
+        }
+
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .resource-id {
+            font-weight: bold;
+            color: #007acc;
+        }
+
+        .resource-type {
+            background-color: #007acc;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .signalk-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 1100;
+        }
+
+        .signalk-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 70%;
+            max-height: 70%;
+            overflow-y: auto;
+            min-width: 500px;
+        }
+
+        .path-item {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 12px;
+            margin: 8px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .path-description {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LwM2M Objects Browser 
+            <span class="gear-icon" onclick="showLwM2MConfig()" title="LwM2M Server Configuration">⚙️</span>
+        </h1>
+        <div class="info">
+            Click on any object button to view its resources and details.
+        </div>
+        
+        <div id="loading" class="loading">
+            Loading LwM2M objects...
+        </div>
+        
+        <div id="error" class="error" style="display: none;">
+            Failed to load settings.json. Please make sure the file exists and is accessible.
+        </div>
+        
+        <div id="objects-container" class="objects-grid" style="display: none;">
+        </div>
+    </div>
+
+    <!-- Modal for object details -->
+    <div id="details-modal" class="details-modal">
+        <div class="details-content">
+            <button class="close-button" onclick="closeDetails()">&times;</button>
+            <div id="details-body"></div>
+        </div>
+    </div>
+
+    <!-- Modal for SignalK paths -->
+    <div id="signalk-modal" class="signalk-modal">
+        <div class="signalk-content">
+            <button class="close-button" onclick="closeSignalK()">&times;</button>
+            <div id="signalk-body"></div>
+        </div>
+    </div>
+
+    <!-- Modal for LwM2M Configuration -->
+    <div id="config-modal" class="details-modal">
+        <div class="details-content">
+            <button class="close-button" onclick="closeConfig()">&times;</button>
+            <div id="config-body"></div>
+        </div>
+    </div>
+
+    <!-- Modal for Instance Selection -->
+    <div id="instance-modal" class="details-modal">
+        <div class="details-content">
+            <button class="close-button" onclick="closeInstanceSelection()">&times;</button>
+            <div id="instance-body"></div>
+        </div>
+    </div>
+
+    <script>
+        console.log('Page loaded, starting to load objects...');
+        
+        async function loadObjects() {
+            try {
+                console.log('Fetching settings.json...');
+                const response = await fetch('/config/settings.json');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Settings data loaded:', data);
+                
+                const objects = data.lwm2m?.objects;
+                
+                if (!objects) {
+                    throw new Error('No objects found in settings.json');
+                }
+                
+                console.log('Found objects:', Object.keys(objects));
+                displayObjects(objects);
+                
+            } catch (error) {
+                console.error('Error loading objects:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        function displayObjects(objects) {
+            console.log('Displaying objects...');
+            const container = document.getElementById('objects-container');
+            const loading = document.getElementById('loading');
+            
+            const sortedObjectIds = Object.keys(objects).sort((a, b) => parseInt(a) - parseInt(b));
+            console.log('Sorted object IDs:', sortedObjectIds);
+            
+            sortedObjectIds.forEach(objectId => {
+                const objectData = objects[objectId];
+                const description = objectData.description || `Object ${objectId}`;
+                const isSingleton = objectData.isSingleton || false;
+                
+                let objectIdDisplay;
+                if (isSingleton) {
+                    objectIdDisplay = `Object ${objectId}`;
+                } else {
+                    const instanceCount = Object.keys(objectData).filter(key => key !== 'description' && key !== 'isSingleton').length;
+                    const instanceText = instanceCount === 1 ? 'instance' : 'instances';
+                    objectIdDisplay = `Object ${objectId} (${instanceCount} ${instanceText})`;
+                }
+                
+                const button = document.createElement('button');
+                button.className = 'object-button';
+                button.onclick = () => showObjectDetails(objectId, description, objectData);
+                
+                button.innerHTML = `
+                    <div class="object-id">${objectIdDisplay}</div>
+                    <div class="object-name">${description}</div>
+                `;
+                
+                container.appendChild(button);
+            });
+            
+            loading.style.display = 'none';
+            container.style.display = 'grid';
+            console.log('Objects displayed successfully');
+        }
+        
+        // Global variables for current object context
+        let currentObjectId = null;
+        let currentObjectDescription = null;
+        let currentObjectData = null;
+        let selectedInstanceId = '0'; // Default to instance 0
+
+        function showObjectDetails(objectId, description, objectData) {
+            console.log('Showing details for object:', objectId);
+            
+            // Store current object context
+            currentObjectId = objectId;
+            currentObjectDescription = description;
+            currentObjectData = objectData;
+            selectedInstanceId = '0'; // Reset to default instance
+            
+            // Show resources for the selected instance
+            showInstanceResources();
+        }
+
+        function showInstanceResources() {
+            const instanceData = currentObjectData[selectedInstanceId];
+            if (!instanceData) {
+                console.error(`No instance ${selectedInstanceId} found for object:`, currentObjectId);
+                return;
+            }
+            
+            const resources = Object.keys(instanceData)
+                .filter(key => key !== 'description')
+                .sort((a, b) => parseInt(a) - parseInt(b));
+            
+            const isSingleton = currentObjectData.isSingleton || false;
+            
+            let instanceManagementHTML = '';
+            if (!isSingleton) {
+                instanceManagementHTML = `
+                    <div style="margin-bottom: 15px; display: flex; gap: 20px;">
+                        <em style="color: #007acc; cursor: pointer;" onclick="addInstance('${currentObjectId}', '${currentObjectDescription}')">Click to add instance</em>
+                        <em style="color: #007acc; cursor: pointer;" onclick="showInstanceSelection()">Click to select instance</em>
+                    </div>
+                `;
+            }
+            
+            let resourcesHTML = `
+                <h2>Object ${currentObjectId}: ${currentObjectDescription}</h2>
+                <p>Instance ${selectedInstanceId}: ${instanceData.description || `Instance ${selectedInstanceId}`}</p>
+                <p>${resources.length} resources defined</p>
+                ${instanceManagementHTML}
+                <div style="max-height: 400px; overflow-y: auto;">
+            `;
+            
+            resources.forEach(resourceId => {
+                const resource = instanceData[resourceId];
+                resourcesHTML += `
+                    <div class="resource-card" onclick="showSignalKPaths('${currentObjectId}', '${resourceId}', '${currentObjectDescription}', ${JSON.stringify(resource).replace(/"/g, '&quot;')})">
+                        <div class="resource-header">
+                            <span class="resource-id">Resource ${resourceId}</span>
+                            <span class="resource-type">${resource.type || 'Unknown'}</span>
+                        </div>
+                        <div>
+                            ${resource.acl ? `<strong>Access:</strong> ${resource.acl}<br>` : ''}
+                            ${resource.value !== undefined ? `<strong>Default:</strong> ${JSON.stringify(resource.value)}<br>` : ''}
+                            ${resource.description ? `<strong>Description:</strong> ${resource.description}` : ''}
+                            <br><em style="color: #007acc;">Click to view settings </em>
+                                <em style="color: #d9534f; margin-left: 16px; cursor: pointer;" onclick="event.stopPropagation(); deleteResourceSettings('${currentObjectId}', '${selectedInstanceId}', '${resourceId}')">Click to delete settings</em>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resourcesHTML += '</div>';
+            
+            document.getElementById('details-body').innerHTML = resourcesHTML;
+            document.getElementById('details-modal').style.display = 'block';
+        }
+
+        function showSignalKPaths(objectId, resourceId, objectDescription, resourceData) {
+            console.log('Showing SignalK paths for:', objectId, resourceId);
+            
+            let pathsHTML = `
+                <h2>SignalK Paths</h2>
+                <h3>Object ${objectId}: ${objectDescription}</h3>
+                <h4>Resource ${resourceId} (${resourceData.type || 'Unknown'})</h4>
+                <p style="color: #666; margin-bottom: 20px;">
+                    ${resourceData.description || 'No description available'}
+                </p>
+                <div style="max-height: 400px; overflow-y: auto;">
+            `;
+            
+            // Always show editable SignalK path input (configured or empty)
+            const currentPath = resourceData.signalk_path || '';
+            pathsHTML += `
+                <div class="path-item" style="background-color: #f0f7ff; border-color: #007acc;">
+                    <input type="text" value="${currentPath}" placeholder="Enter SignalK path..."
+                           style="width: 100%; min-width: 300px; max-width: 100%; border: 1px solid #007acc; padding: 8px; font-family: 'Courier New', monospace; font-size: 14px; border-radius: 4px; box-sizing: border-box; resize: horizontal;">
+                    <div class="path-description" style="margin-top: 8px;">
+                        <em style="color: #007acc; cursor: pointer;" onclick="saveSignalKPath('${objectId}', '${resourceId}', this.parentElement.previousElementSibling.value)">Click to save settings</em>
+                    </div>
+                </div>
+            `;
+            
+            pathsHTML += '</div>';
+            
+            document.getElementById('signalk-body').innerHTML = pathsHTML;
+            document.getElementById('signalk-modal').style.display = 'block';
+        }
+
+        function generateSignalKPaths(objectId, resourceId, objectDescription, resourceData) {
+            const paths = [];
+            
+            const basePath = `sensors.lwm2m.object${objectId}.resource${resourceId}`;
+            
+            paths.push({
+                path: basePath + '.value',
+                description: `Current value of ${objectDescription} resource ${resourceId}`,
+                units: getResourceUnits(objectId, resourceId, resourceData.type)
+            });
+            
+            if (resourceData.type && ['FLOAT', 'INTEGER'].includes(resourceData.type)) {
+                paths.push({
+                    path: basePath + '.timestamp',
+                    description: 'Timestamp of the last measurement in ISO 8601 format',
+                    units: 'RFC3339 UTC'
+                });
+                
+                paths.push({
+                    path: basePath + '.source',
+                    description: 'Source identifier of the sensor data',
+                    units: 'string'
+                });
+            }
+            
+            switch(objectId) {
+                case '3':
+                    if (resourceId === '0') paths.push({path: 'design.manufacturer', description: 'Device manufacturer name'});
+                    if (resourceId === '1') paths.push({path: 'design.model', description: 'Device model number'});
+                    if (resourceId === '2') paths.push({path: 'design.serial', description: 'Device serial number'});
+                    break;
+                    
+                case '6':
+                    if (resourceId === '0') paths.push({path: 'navigation.position.latitude', description: 'Current latitude', units: 'rad'});
+                    if (resourceId === '1') paths.push({path: 'navigation.position.longitude', description: 'Current longitude', units: 'rad'});
+                    if (resourceId === '2') paths.push({path: 'navigation.position.altitude', description: 'Current altitude', units: 'm'});
+                    break;
+                    
+                case '3303':
+                    paths.push({path: 'environment.inside.temperature', description: 'Inside temperature', units: 'K'});
+                    paths.push({path: 'environment.outside.temperature', description: 'Outside temperature', units: 'K'});
+                    break;
+                    
+                case '3316':
+                    paths.push({path: 'electrical.batteries.house.voltage', description: 'House battery voltage', units: 'V'});
+                    paths.push({path: 'electrical.solar.voltage', description: 'Solar panel voltage', units: 'V'});
+                    break;
+                    
+                case '3317':
+                    paths.push({path: 'electrical.batteries.house.current', description: 'House battery current', units: 'A'});
+                    paths.push({path: 'electrical.solar.current', description: 'Solar panel current', units: 'A'});
+                    break;
+                    
+                default:
+                    if (resourceData.type === 'BOOLEAN') {
+                        paths.push({path: `sensors.${objectDescription.toLowerCase().replace(/\s+/g, '_')}.state`, description: 'Boolean state value'});
+                    }
+            }
+            
+            return paths;
+        }
+
+        function getResourceUnits(objectId, resourceId, type) {
+            switch(objectId) {
+                case '3303': return 'K';
+                case '3316': return 'V';
+                case '3317': return 'A';
+                case '3323': return 'Pa';
+                case '3328': return 'W';
+                case '6':
+                    if (resourceId === '0' || resourceId === '1') return 'rad';
+                    if (resourceId === '2') return 'm';
+                    return null;
+                default:
+                    switch(type) {
+                        case 'FLOAT':
+                        case 'INTEGER':
+                            return 'number';
+                        case 'BOOLEAN':
+                            return 'boolean';
+                        case 'STRING':
+                            return 'string';
+                        default:
+                            return null;
+                    }
+            }
+        }
+
+        async function saveSignalKPath(objectId, resourceId, newPath) {
+            try {
+                console.log(`Saving SignalK path for Object ${objectId}, Resource ${resourceId}: ${newPath}`);
+                
+                // Show saving feedback
+                const clickElement = event.target;
+                const originalText = clickElement.textContent;
+                clickElement.textContent = 'Saving...';
+                clickElement.style.color = '#666';
+                
+                // Send update request to server
+                const response = await fetch('/api/update-signalk-path', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        objectId: objectId,
+                        resourceId: resourceId,
+                        signalkPath: newPath
+                    })
+                });
+                
+                if (response.ok) {
+                    clickElement.textContent = 'Saved!';
+                    clickElement.style.color = '#28a745';
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        clickElement.textContent = originalText;
+                        clickElement.style.color = '#007acc';
+                    }, 2000);
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+            } catch (error) {
+                console.error('Error saving SignalK path:', error);
+                
+                // Show error feedback
+                const clickElement = event.target;
+                clickElement.textContent = 'Error saving!';
+                clickElement.style.color = '#c62828';
+                
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    clickElement.textContent = 'Click to save settings';
+                    clickElement.style.color = '#007acc';
+                }, 3000);
+            }
+        }
+
+        function closeDetails() {
+            document.getElementById('details-modal').style.display = 'none';
+        }
+
+        function closeSignalK() {
+            document.getElementById('signalk-modal').style.display = 'none';
+        }
+
+        async function showLwM2MConfig() {
+            console.log('Showing LwM2M Configuration...');
+            
+            try {
+                // Load current configuration from lwm2m-defaults.json
+                const response = await fetch('../lwm2m-defaults.json');
+                let configData = {};
+                
+                if (response.ok) {
+                    const text = await response.text();
+                    if (text.trim()) {
+                        configData = JSON.parse(text);
+                    } else {
+                        console.log('Config file is empty, using defaults');
+                    }
+                } else {
+                    console.log('No existing config found, creating new one');
+                }
+                
+                let configHTML = `
+                    <h2>LwM2M Server Configuration</h2>
+                    <p style="color: #666; margin-bottom: 20px;">
+                        Configure your LwM2M client connection settings
+                    </p>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Lazy Start:</label>
+                            <select id="lazy-start" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="true" ${configData.lazy_start === true ? 'selected' : ''}>True</option>
+                                <option value="false" ${configData.lazy_start === false ? 'selected' : ''}>False</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Endpoint:</label>
+                            <input type="text" id="endpoint" value="${configData.endpoint || ''}" 
+                                   placeholder="lwm2m-client-001" 
+                                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Server Host:</label>
+                            <input type="text" id="server-host" value="${configData.server_host || ''}" 
+                                   placeholder="localhost" 
+                                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Server Port:</label>
+                            <input type="number" id="server-port" value="${configData.server_port || 5683}" 
+                                   placeholder="5683" 
+                                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Lifetime (seconds):</label>
+                            <input type="number" id="lifetime" value="${configData.lifetime || 86400}" 
+                                   placeholder="86400" 
+                                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Binding Mode:</label>
+                            <select id="binding-mode" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="U" ${configData.binding_mode === 'U' ? 'selected' : ''}>UDP (U)</option>
+                                <option value="UQ" ${configData.binding_mode === 'UQ' ? 'selected' : ''}>UDP with Queue (UQ)</option>
+                                <option value="S" ${configData.binding_mode === 'S' ? 'selected' : ''}>SMS (S)</option>
+                                <option value="SQ" ${configData.binding_mode === 'SQ' ? 'selected' : ''}>SMS with Queue (SQ)</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Security Mode:</label>
+                            <select id="security-mode" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="0" ${configData.security_mode == 0 ? 'selected' : ''}>Pre-Shared Key (0)</option>
+                                <option value="1" ${configData.security_mode == 1 ? 'selected' : ''}>Raw Public Key (1)</option>
+                                <option value="2" ${configData.security_mode == 2 ? 'selected' : ''}>Certificate (2)</option>
+                                <option value="3" ${configData.security_mode == 3 ? 'selected' : ''}>NoSec (3)</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Client Identity:</label>
+                            <input type="text" id="client-identity" value="${configData.client_identity || ''}" 
+                                   placeholder="Client001" 
+                                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Pre-Shared Key:</label>
+                            <input type="text" id="psk" value="${configData.psk || ''}" 
+                                   placeholder="0123456789ABCDEF" 
+                                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <button onclick="saveLwM2MConfig()" 
+                                    style="background-color: #007acc; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                                Save Configuration
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('config-body').innerHTML = configHTML;
+                console.log('Setting modal display to block...');
+                document.getElementById('config-modal').style.display = 'block';
+                console.log('Modal should be visible now');
+                
+            } catch (error) {
+                console.error('Error loading LwM2M configuration:', error);
+            }
+        }
+
+        async function saveLwM2MConfig() {
+            try {
+                const configData = {
+                    lazy_start: document.getElementById('lazy-start').value === 'true',
+                    endpoint: document.getElementById('endpoint').value,
+                    server_host: document.getElementById('server-host').value,
+                    server_port: parseInt(document.getElementById('server-port').value) || 5683,
+                    lifetime: parseInt(document.getElementById('lifetime').value) || 86400,
+                    binding_mode: document.getElementById('binding-mode').value,
+                    security_mode: parseInt(document.getElementById('security-mode').value) || 3,
+                    client_identity: document.getElementById('client-identity').value,
+                    psk: document.getElementById('psk').value
+                };
+                
+                const response = await fetch('/api/update-lwm2m-config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(configData)
+                });
+                
+                if (response.ok) {
+                    alert('Configuration saved successfully!');
+                    closeConfig();
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+            } catch (error) {
+                console.error('Error saving LwM2M configuration:', error);
+                alert('Error saving configuration: ' + error.message);
+            }
+        }
+
+        async function addInstance(objectId, objectDescription) {
+            try {
+                console.log('Adding instance for object:', objectId);
+                
+                const response = await fetch('/api/add-instance', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        objectId: objectId
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('Instance added successfully:', result);
+                
+                // Reload the current object data
+                const settingsResponse = await fetch('/settings.json');
+                const settingsData = await settingsResponse.json();
+                currentObjectData = settingsData.lwm2m.objects[currentObjectId];
+                
+                // Set the new instance as selected
+                selectedInstanceId = result.instanceId.toString();
+                
+                // Refresh the object details view
+                showInstanceResources();
+                
+                // Show success message (optional)
+                alert(`Instance ${result.instanceId} added to Object ${objectId}`);
+                
+            } catch (error) {
+                console.error('Error adding instance:', error);
+                alert(`Error adding instance: ${error.message}`);
+            }
+        }
+
+        function showInstanceSelection() {
+            console.log('Showing instance selection for object:', currentObjectId);
+            
+            // Get all instances for current object
+            const instances = Object.keys(currentObjectData)
+                .filter(key => key !== 'description' && key !== 'isSingleton')
+                .sort((a, b) => parseInt(a) - parseInt(b));
+            
+            let instancesHTML = `
+                <h2>Select Instance for Object ${currentObjectId}</h2>
+                <p>Available instances:</p>
+                <div style="max-height: 400px; overflow-y: auto;">
+            `;
+            
+            instances.forEach(instanceId => {
+                const instanceData = currentObjectData[instanceId];
+                const isSelected = instanceId === selectedInstanceId;
+                
+                instancesHTML += `
+                    <div class="resource-card ${isSelected ? 'selected-instance' : ''}" onclick="selectInstance('${instanceId}')" style="cursor: pointer; ${isSelected ? 'background-color: #e6f3ff; border-left: 4px solid #007acc;' : ''}">
+                        <div class="resource-header">
+                            <span class="resource-id">Instance ${instanceId}</span>
+                            ${isSelected ? '<span class="resource-type" style="color: #007acc;">Selected</span>' : ''}
+                        </div>
+                        <div>
+                            <strong>Description:</strong> ${instanceData.description || `Instance ${instanceId}`}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            instancesHTML += '</div>';
+            
+            document.getElementById('instance-body').innerHTML = instancesHTML;
+            document.getElementById('instance-modal').style.display = 'block';
+        }
+
+        function selectInstance(instanceId) {
+            console.log('Selected instance:', instanceId);
+            selectedInstanceId = instanceId;
+            
+            // Close instance selection modal
+            closeInstanceSelection();
+            
+            // Refresh the object details to show selected instance
+            showInstanceResources();
+        }
+
+        function closeInstanceSelection() {
+            document.getElementById('instance-modal').style.display = 'none';
+        }
+
+        function closeConfig() {
+            document.getElementById('config-modal').style.display = 'none';
+        }
+        
+        document.getElementById('details-modal').onclick = function(event) {
+            if (event.target === this) {
+                closeDetails();
+            }
+        };
+        
+        document.getElementById('signalk-modal').onclick = function(event) {
+            if (event.target === this) {
+                closeSignalK();
+            }
+        };
+
+        document.getElementById('instance-modal').onclick = function(event) {
+            if (event.target === this) {
+                closeInstanceSelection();
+            }
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, calling loadObjects...');
+            loadObjects();
+        });
+
+        function deleteResourceSettings(objectId, instanceId, resourceId) {
+            if (!confirm(`Are you sure you want to delete Resource ${resourceId} from Instance ${instanceId} of Object ${objectId}?`)) return;
+            fetch(`/api/delete-resource-settings`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ objectId, instanceId, resourceId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Resource deleted successfully.');
+                    showInstanceResources();
+                } else {
+                    alert('Failed to delete resource: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(err => {
+                alert('Error deleting resource: ' + err);
+            });
+        }
+    </script>
+</body>
+</html>

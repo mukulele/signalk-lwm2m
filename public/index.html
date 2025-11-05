@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LwM2M Objects Browser</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e4e5e6;
+            line-height: 1.6;
+            font-size: 0.875rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #29363d;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #003399;
+            padding-bottom: 15px;
+        }
+        
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #63c2de;
+        }
+        
+        .btn {
+            background-color: #003399;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 0.875rem;
+        }
+        
+        .btn:hover {
+            background-color: #002266;
+        }
+        
+        .btn-secondary {
+            background-color: #3e515b;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #29363d;
+        }
+        
+        .objects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .object-button {
+            background: linear-gradient(135deg, #007acc, #005c99);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        
+        .object-button:hover {
+            background: linear-gradient(135deg, #005c99, #004577);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .object-id {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+
+        
+        .object-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #536c79;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #f86c6b;
+        }
+
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #63c2de;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #4dbd74;
+        }
+
+        .details-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .details-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+            min-width: 600px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #536c79;
+        }
+
+        .resource-card {
+            border: 1px solid #c2cfd6;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #f0f3f5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .resource-card:hover {
+            background-color: #d1ecf1;
+            border-color: #003399;
+            box-shadow: 0 2px 8px rgba(0,51,153,0.2);
+        }
+
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .resource-id {
+            font-weight: bold;
+            color: #003399;
+        }
+
+        .resource-type {
+            background-color: #003399;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #c2cfd6;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 0.875rem;
+        }
+
+        .path-item {
+            background-color: #f0f3f5;
+            border: 1px solid #c2cfd6;
+            border-radius: 4px;
+            padding: 12px;
+            margin: 8px 0;
+            font-family: 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+            cursor: pointer;
+        }
+
+        .path-item:hover {
+            background-color: #d1ecf1;
+        }
+
+        .path-description {
+            color: #536c79;
+            font-size: 14px;
+            margin-top: 5px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LwM2M Objects Browser</h1>
+        <div class="info">
+            Click on any object button to view its instances and resources. 
+            <button class="btn btn-secondary" onclick="downloadSettings()">Click to download current settings</button>
+            <button class="btn btn-secondary" onclick="uploadSettings()">Click to upload settings</button>
+        </div>
+        
+        <div id="status-message"></div>
+        
+        <div id="loading" class="loading">
+            Loading LwM2M objects from inventory...
+        </div>
+        
+        <div id="error" class="error" style="display: none;">
+            Failed to load lwm2m-object-inventory.json. Please make sure the file exists and is accessible.
+        </div>
+        
+        <div id="objects-container" class="objects-grid" style="display: none;">
+        </div>
+    </div>
+
+    <!-- Hidden file input for uploading settings -->
+    <input type="file" id="settings-upload" accept=".json" style="display: none;" onchange="handleSettingsUpload(event)">
+
+    <!-- Modal for object details -->
+    <div id="details-modal" class="details-modal">
+        <div class="details-content">
+            <button class="close-button" onclick="closeDetails()">&times;</button>
+            <div id="details-body"></div>
+        </div>
+    </div>
+
+    <!-- Modal for SignalK paths -->
+    <div id="signalk-modal" class="details-modal">
+        <div class="details-content">
+            <button class="close-button" onclick="closeSignalK()">&times;</button>
+            <div id="signalk-body"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let inventoryData = null;
+        let settingsData = null;
+        let currentObjectId = null;
+        let currentObjectDescription = null;
+        let currentObjectData = null;
+        let selectedInstanceId = '0';
+
+        // Load inventory automatically on page load
+        async function loadObjects() {
+            try {
+                console.log('Fetching lwm2m-object-inventory.json...');
+                
+                // Use local file in same directory
+                let inventoryPath = 'lwm2m-object-inventory.json';
+                inventoryData = await loadLocalJsonFile(inventoryPath);
+                
+                console.log('Inventory data loaded:', inventoryData);
+                
+                if (!inventoryData || Object.keys(inventoryData).length === 0) {
+                    throw new Error('No objects found in lwm2m-object-inventory.json');
+                }
+                
+                console.log('Found objects:', Object.keys(inventoryData));
+                
+                // Also load settings.json for CRUD operations
+                await loadSettings();
+                
+                displayObjects(inventoryData);
+                
+            } catch (error) {
+                console.error('Error loading objects:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function loadSettings() {
+            try {
+                console.log('Loading settings.json...');
+                
+                // Use local file in same directory
+                let settingsPath = 'settings.json';
+                settingsData = await loadLocalJsonFile(settingsPath);
+                
+                console.log('Settings data loaded successfully');
+                
+            } catch (error) {
+                console.error('Error loading settings.json:', error);
+                showStatus('Warning: settings.json not loaded. CRUD operations will not work.', 'error');
+            }
+        }
+
+        async function loadLocalJsonFile(path) {
+            const response = await fetch(path);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        }
+
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status-message');
+            statusDiv.className = type;
+            statusDiv.innerHTML = message;
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.innerHTML = '';
+                    statusDiv.className = '';
+                }, 3000);
+            }
+        }
+
+        function displayObjects(objects) {
+            console.log('Displaying objects...');
+            const container = document.getElementById('objects-container');
+            const loading = document.getElementById('loading');
+            
+            const sortedObjectIds = Object.keys(objects).sort((a, b) => parseInt(a) - parseInt(b));
+            console.log('Sorted object IDs:', sortedObjectIds);
+            
+            container.innerHTML = '';
+            
+            sortedObjectIds.forEach(objectId => {
+                const objectData = objects[objectId];
+                const objectName = objectData.name || `Object ${objectId}`;
+                
+                // Get instance count from settings.json
+                let instanceCount = 0;
+                let instanceText = '';
+                if (settingsData && settingsData.lwm2m && settingsData.lwm2m.objects && settingsData.lwm2m.objects[objectId]) {
+                    const settingsObject = settingsData.lwm2m.objects[objectId];
+                    const instances = Object.keys(settingsObject).filter(key => 
+                        key !== 'description' && key !== 'isSingleton' && !isNaN(parseInt(key))
+                    );
+                    instanceCount = instances.length;
+                    instanceText = instanceCount === 1 ? '1 instance' : `${instanceCount} instances`;
+                } else {
+                    instanceText = '<span style="opacity: 0.6;">not configured</span>';
+                }
+                
+                const button = document.createElement('button');
+                button.className = 'object-button';
+                button.innerHTML = `
+                    <div class="object-id">
+                        Object ID: ${objectId} (${instanceText})
+                    </div>
+                    <div class="object-name">${objectName}</div>
+                `;
+                
+                button.onclick = () => showObjectDetails(objectId, objectName, objectData);
+                
+                container.appendChild(button);
+            });
+            
+            loading.style.display = 'none';
+            container.style.display = 'grid';
+            
+            console.log(`Displayed ${sortedObjectIds.length} objects`);
+        }
+
+        function showObjectDetails(objectId, objectName, inventoryObjectData) {
+            console.log('Showing details for object:', objectId);
+            
+            if (!settingsData || !settingsData.lwm2m || !settingsData.lwm2m.objects) {
+                showStatus('Settings data not loaded. Cannot show object details.', 'error');
+                return;
+            }
+            
+            let settingsObjectData = settingsData.lwm2m.objects[objectId];
+            if (!settingsObjectData) {
+                // Create new object with instance 0 and standard resources
+                console.log('Creating new object in settings.json:', objectId);
+                settingsObjectData = createObjectFromInventory(objectId, objectName, inventoryObjectData);
+                settingsData.lwm2m.objects[objectId] = settingsObjectData;
+                
+                // Save and refresh display
+                saveAndRefresh();
+                
+                showStatus(`Created new object ${objectId} in settings with instance 0`, 'success');
+            }
+            
+            currentObjectId = objectId;
+            currentObjectDescription = objectName;
+            currentObjectData = settingsObjectData;
+            selectedInstanceId = '0';
+            
+            showInstanceResources();
+        }
+
+        function showInstanceResources() {
+            const instanceData = currentObjectData[selectedInstanceId];
+            if (!instanceData) {
+                showStatus(`No instance ${selectedInstanceId} found for object ${currentObjectId}`, 'error');
+                return;
+            }
+            
+            const resources = Object.keys(instanceData)
+                .filter(key => key !== 'description')
+                .sort((a, b) => parseInt(a) - parseInt(b));
+            
+            // Build action links based on object type
+            let actionLinks = `<em style="color: #003399; cursor: pointer; margin-left: 10px;" onclick="showInstanceSelector()">Click to select instance</em>`;
+            
+            // Only show "add instance" for non-singleton objects
+            if (!currentObjectData.isSingleton) {
+                actionLinks += ` <em style="color: #003399; cursor: pointer; margin-left: 10px;" onclick="addNewInstance()">Click to add instance</em>`;
+            }
+            
+            actionLinks += ` <em style="color: #003399; cursor: pointer; margin-left: 10px;" onclick="deleteCurrentInstance()">Click to delete instance</em>`;
+            
+            let resourcesHTML = `
+                <h2>Object ${currentObjectId}: ${currentObjectDescription}</h2>
+                <p>${instanceData.description || `Instance ${selectedInstanceId}`} 
+                   ${actionLinks}
+                </p>
+                <p>${resources.length} resources defined</p>
+                <div style="max-height: 400px; overflow-y: auto;">
+            `;
+            
+            resources.forEach(resourceId => {
+                const resource = instanceData[resourceId];
+                resourcesHTML += `
+                    <div class="resource-card" onclick="showSignalKPaths('${currentObjectId}', '${resourceId}', '${currentObjectDescription}', ${JSON.stringify(resource).replace(/"/g, '&quot;')})">
+                        <div class="resource-header">
+                            <span class="resource-id">Resource ${resourceId}</span>
+                            <span class="resource-type">${resource.type || 'Unknown'}</span>
+                        </div>
+                        <div>
+                            ${resource.acl ? `<strong>Access:</strong> ${resource.acl}<br>` : ''}
+                            ${resource.value !== undefined ? `<strong>Value:</strong> ${JSON.stringify(resource.value)}<br>` : ''}
+                            ${resource.description ? `<strong>Description:</strong> ${resource.description}<br>` : ''}
+                            ${resource.signalk_path ? `<strong>SignalK Path:</strong> <code>${resource.signalk_path}</code><br>` : ''}
+                            <em style="color: #003399;">Click to edit SignalK path</em>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resourcesHTML += '</div>';
+            
+            document.getElementById('details-body').innerHTML = resourcesHTML;
+            document.getElementById('details-modal').style.display = 'block';
+        }
+
+        function showSignalKPaths(objectId, resourceId, objectDescription, resourceData) {
+            let pathsHTML = `
+                <h2>SignalK Path Configuration</h2>
+                <h3>Object ${objectId}: ${objectDescription}</h3>
+                <h4>Resource ${resourceId} (${resourceData.type || 'Unknown'})</h4>
+                <p style="color: #666; margin-bottom: 20px;">
+                    ${resourceData.description || 'No description available'}
+                </p>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <div class="form-group">
+                        <label class="form-label">SignalK Path:</label>
+                        <input type="text" id="signalk-path-input" value="${resourceData.signalk_path || ''}" 
+                               placeholder="e.g. sensors.temperature.cabin" class="form-control" 
+                               style="font-family: 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn" onclick="saveSignalKPath('${objectId}', '${resourceId}')">Save Path</button>
+                        <span id="save-status" style="margin-left: 10px;"></span>
+                    </div>
+                </div>`;
+            
+            document.getElementById('signalk-body').innerHTML = pathsHTML;
+            document.getElementById('signalk-modal').style.display = 'block';
+        }
+
+        function saveSignalKPath(objectId, resourceId) {
+            const newPath = document.getElementById('signalk-path-input').value.trim();
+            const statusElement = document.getElementById('save-status');
+            
+            try {
+                if (!settingsData?.lwm2m?.objects?.[objectId]?.[selectedInstanceId]?.[resourceId]) {
+                    throw new Error('Resource not found');
+                }
+                
+                const resource = settingsData.lwm2m.objects[objectId][selectedInstanceId][resourceId];
+                
+                if (newPath) {
+                    resource.signalk_path = newPath;
+                } else {
+                    delete resource.signalk_path;
+                }
+                
+                // Save and refresh display
+                saveAndRefresh();
+                
+                statusElement.innerHTML = '<span style="color: #4dbd74;">Saved!</span>';
+                
+                // Update the current object data view
+                currentObjectData = settingsData.lwm2m.objects[currentObjectId];
+                
+                setTimeout(() => {
+                    statusElement.innerHTML = '';
+                }, 2000);
+                
+            } catch (error) {
+                statusElement.innerHTML = '<span style="color: #f86c6b;">Error saving!</span>';
+                console.error('Error saving SignalK path:', error);
+            }
+        }
+
+
+        function downloadJsonFile(data, filename) {
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function saveAndRefresh() {
+            // Changes are only saved in memory - use download button to save to file
+            console.log('Settings updated in memory - use Download button to save to file');
+            
+            // Refresh object display to show updated counts
+            displayObjects(inventoryData);
+            
+            // Show reminder to download
+            showStatus('Changes saved in memory. Use "Download Updated settings.json" button to save to file.', 'info');
+        }
+
+        function downloadSettings() {
+            if (!settingsData) {
+                showStatus('No settings.json data available', 'error');
+                return;
+            }
+            downloadJsonFile(settingsData, 'settings.json');
+            showStatus('settings.json was downloaded', 'success');
+        }
+
+        function uploadSettings() {
+            document.getElementById('settings-upload').click();
+        }
+
+        function handleSettingsUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
+                showStatus('Please select a valid JSON file', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const uploadedData = JSON.parse(e.target.result);
+                    
+                    // Validate the structure
+                    if (!uploadedData.lwm2m || !uploadedData.lwm2m.objects) {
+                        throw new Error('Invalid settings.json structure - missing lwm2m.objects');
+                    }
+                    
+                    // Replace current settings
+                    settingsData = uploadedData;
+                    
+                    // Refresh the display
+                    displayObjects(inventoryData);
+                    
+                    showStatus('Settings uploaded and applied successfully!', 'success');
+                    
+                    // Clear the file input for future uploads
+                    event.target.value = '';
+                    
+                } catch (error) {
+                    showStatus('Error parsing uploaded file: ' + error.message, 'error');
+                    console.error('Upload error:', error);
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+
+
+        // Modal close functions
+        function closeDetails() {
+            document.getElementById('details-modal').style.display = 'none';
+        }
+
+        function closeSignalK() {
+            document.getElementById('signalk-modal').style.display = 'none';
+        }
+
+        function showInstanceSelector() {
+            // Get all available instances for the current object
+            const availableInstances = Object.keys(currentObjectData)
+                .filter(key => key !== 'description' && key !== 'isSingleton' && !isNaN(parseInt(key)))
+                .sort((a, b) => parseInt(a) - parseInt(b));
+            
+            if (availableInstances.length <= 1) {
+                showStatus('Only one instance available for this object', 'info');
+                return;
+            }
+            
+            let selectorHTML = `
+                <h2>Select Instance for Object ${currentObjectId}</h2>
+                <p>Choose an instance to view its resources:</p>
+                <div style="display: grid; gap: 10px; margin: 20px 0;">
+            `;
+            
+            availableInstances.forEach(instanceId => {
+                const instanceData = currentObjectData[instanceId];
+                const isSelected = instanceId === selectedInstanceId;
+                const buttonStyle = isSelected ? 
+                    'background-color: #003399; color: white;' : 
+                    'background-color: #f0f3f5; color: #29363d; border: 1px solid #c2cfd6;';
+                
+                selectorHTML += `
+                    <button style="padding: 15px; border-radius: 4px; cursor: pointer; text-align: left; ${buttonStyle}"
+                            onclick="selectInstance('${instanceId}')">
+                        <strong>Instance ${instanceId}</strong><br>
+                        <small>${instanceData.description || `Instance ${instanceId}`}</small>
+                    </button>
+                `;
+            });
+            
+            selectorHTML += '</div>';
+            
+            document.getElementById('signalk-body').innerHTML = selectorHTML;
+            document.getElementById('signalk-modal').style.display = 'block';
+        }
+
+        function selectInstance(instanceId) {
+            selectedInstanceId = instanceId;
+            closeSignalK();
+            showInstanceResources();
+        }
+
+        function createObjectFromInventory(objectId, objectName, inventoryObjectData) {
+            console.log('Creating object from inventory data:', inventoryObjectData);
+            
+            const newObject = {
+                description: objectName,
+                isSingleton: inventoryObjectData.isSingleton || false,
+                "0": {
+                    description: `${objectName} Instance 0`
+                }
+            };
+            
+            // Add standard resources from inventory
+            if (inventoryObjectData.resources) {
+                Object.keys(inventoryObjectData.resources).forEach(resourceId => {
+                    const inventoryResource = inventoryObjectData.resources[resourceId];
+                    
+                    newObject["0"][resourceId] = {
+                        type: inventoryResource.type || "STRING",
+                        acl: inventoryResource.operations || "RW",
+                        value: getDefaultValueForType(inventoryResource.type),
+                        description: inventoryResource.name || `Resource ${resourceId}`
+                    };
+                });
+            }
+            
+            return newObject;
+        }
+
+        function getDefaultValueForType(type) {
+            switch(type) {
+                case 'INTEGER':
+                case 'FLOAT':
+                    return 0;
+                case 'BOOLEAN':
+                    return false;
+                case 'STRING':
+                case 'OPAQUE':
+                default:
+                    return "";
+            }
+        }
+
+        function addNewInstance() {
+            // Find next available instance ID
+            const existingInstances = Object.keys(currentObjectData)
+                .filter(key => key !== 'description' && key !== 'isSingleton' && !isNaN(parseInt(key)))
+                .map(id => parseInt(id))
+                .sort((a, b) => a - b);
+            
+            // Check if this is a singleton object
+            if (currentObjectData.isSingleton && existingInstances.length > 0) {
+                showStatus('Cannot add instance: This is a singleton object (only one instance allowed)', 'error');
+                return;
+            }
+            
+            let newInstanceId = '0';
+            if (existingInstances.length > 0) {
+                newInstanceId = String(Math.max(...existingInstances) + 1);
+            }
+            
+            // Create new instance based on instance 0 structure
+            const templateInstance = currentObjectData['0'];
+            if (!templateInstance) {
+                showStatus('Cannot add instance: No template instance found', 'error');
+                return;
+            }
+            
+            const newInstance = {
+                description: `${currentObjectDescription} Instance ${newInstanceId}`
+            };
+            
+            // Copy all resources from template instance
+            Object.keys(templateInstance).forEach(resourceId => {
+                if (resourceId !== 'description') {
+                    const templateResource = templateInstance[resourceId];
+                    newInstance[resourceId] = {
+                        type: templateResource.type,
+                        acl: templateResource.acl,
+                        value: getDefaultValueForType(templateResource.type),
+                        description: templateResource.description
+                    };
+                    
+                    // Don't copy SignalK path - let user set unique paths per instance
+                    if (templateResource.signalk_path) {
+                        // Suggest a modified path with instance suffix
+                        const basePath = templateResource.signalk_path.replace(/\.\d+$/, '');
+                        newInstance[resourceId].signalk_path = `${basePath}.${newInstanceId}`;
+                    }
+                }
+            });
+            
+            // Add the new instance to the object
+            currentObjectData[newInstanceId] = newInstance;
+            selectedInstanceId = newInstanceId;
+            
+            // Save and refresh display
+            saveAndRefresh();
+            
+            showStatus(`Added new instance ${newInstanceId} for object ${currentObjectId}`, 'success');
+            
+            // Show the new instance
+            showInstanceResources();
+        }
+
+        function deleteCurrentInstance() {
+            const existingInstances = Object.keys(currentObjectData)
+                .filter(key => key !== 'description' && key !== 'isSingleton' && !isNaN(parseInt(key)));
+            
+            if (existingInstances.length <= 1) {
+                showStatus('Cannot delete instance: At least one instance must remain', 'error');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to delete instance ${selectedInstanceId} of object ${currentObjectId}?`)) {
+                const deletedInstanceId = selectedInstanceId;
+                delete currentObjectData[selectedInstanceId];
+                
+                // Select the first remaining instance
+                const remainingInstances = Object.keys(currentObjectData)
+                    .filter(key => key !== 'description' && key !== 'isSingleton' && !isNaN(parseInt(key)))
+                    .sort((a, b) => parseInt(a) - parseInt(b));
+                
+                if (remainingInstances.length > 0) {
+                    selectedInstanceId = remainingInstances[0];
+                }
+                
+                // Save and refresh display
+                saveAndRefresh();
+                
+                showStatus(`Deleted instance ${deletedInstanceId} from object ${currentObjectId}`, 'success');
+                
+                // Show remaining instance
+                showInstanceResources();
+            }
+        }
+
+
+
+        // Modal click outside to close
+        document.getElementById('details-modal').onclick = function(event) {
+            if (event.target === this) closeDetails();
+        };
+        
+        document.getElementById('signalk-modal').onclick = function(event) {
+            if (event.target === this) closeSignalK();
+        };
+
+        // Load objects automatically on page load
+        window.addEventListener('load', loadObjects);
+    </script>
+</body>
+</html>
