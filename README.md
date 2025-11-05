@@ -15,13 +15,13 @@ A SignalK plugin for managing LwM2M (Lightweight M2M) objects with integrated we
 ## Overview
 
 This plugin provides:
-- **🌐 LwM2M Client Integration**: Complete LwM2M client functionality with Wakatiwai binary
-- **📱 Local Web Interface**: Works directly in browser without server dependencies
-- **🔄 XML to JSON Conversion**: Automatic processing of LwM2M XML definitions  
-- **🎯 SignalK Path Mapping**: Configuration of SignalK paths for LwM2M resources
-- **📂 File-based Configuration**: Easy loading and saving of JSON configurations
-- **📊 Object Management**: Add instances, manage resources, assign paths
-- **⚡ ES Module Support**: Modern JavaScript module system with TypeScript support
+- **LwM2M Client Integration**: Complete LwM2M client functionality with Wakatiwai binary
+- **Local Web Interface**: Works directly in browser without server dependencies
+- **XML to JSON Conversion**: Automatic processing of LwM2M XML definitions  
+- **SignalK Path Mapping**: Configuration of SignalK paths for LwM2M resources
+- **File-based Configuration**: Easy loading and saving of JSON configurations
+- **Object Management**: Add instances, manage resources, assign paths
+- **ES Module Support**: Modern JavaScript module system with TypeScript support
 
 ## Installation
 
@@ -241,9 +241,9 @@ npm run build
 
 Das Plugin wurde vollständig von MQTT auf LwM2M migriert:
 
-- **✅ Vorher**: MQTT Export mit Broker-Abhängigkeit + HTTP-Server für Web Interface
-- **✅ Nachher**: LwM2M Client mit direkter Protokoll-Unterstützung + lokales Web Interface
-- **🚀 Roadmap**: Zukünftige Node-API Integration geplant (siehe `/lib/ROADMAP.md`)
+- **Previously**: MQTT Export with broker dependency + HTTP server for web interface
+- **Now**: LwM2M Client with direct protocol support + local web interface
+- **Roadmap**: Future Node-API integration planned (see `/lib/ROADMAP.md`)
 
 ### Vorteile der neuen Architektur
 
