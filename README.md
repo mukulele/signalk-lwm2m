@@ -1,5 +1,9 @@
 # SignalK LwM2M Plugin
 
+[![Build and Test](https://github.com/mukulele/signalk-lwm2m/workflows/Build%20and%20Test/badge.svg)](https://github.com/mukulele/signalk-lwm2m/actions)
+[![npm version](https://badge.fury.io/js/signalk-lwm2m.svg)](https://www.npmjs.com/package/signalk-lwm2m)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **Version 0.0.1-alpha.1**
 
 A SignalK plugin for managing LwM2M (Lightweight M2M) objects with integrated web interface.
@@ -20,6 +24,58 @@ This plugin provides:
 - **⚡ ES Module Support**: Modern JavaScript module system with TypeScript support
 
 ## Installation
+
+### From npm (when published)
+```bash
+npm install signalk-lwm2m
+```
+
+### From GitHub
+```bash
+npm install https://github.com/mukulele/signalk-lwm2m.git
+```
+
+### Manual Installation
+1. Clone the repository:
+```bash
+git clone https://github.com/mukulele/signalk-lwm2m.git
+cd signalk-lwm2m
+```
+
+2. Install dependencies and build:
+```bash
+npm install
+npm run build
+```
+
+3. Install as SignalK plugin (copy to SignalK plugin directory)
+
+## Configuration
+
+The plugin can be configured through the SignalK web interface:
+
+1. Navigate to **Server → Plugin Config**
+2. Find **LwM2M Objects** in the plugin list
+3. Configure connection parameters, client settings, and logging options
+4. Enable the plugin
+
+### Configuration Options
+
+- **Connection Parameters**: LwM2M server host, ports, IPv4/IPv6 settings
+- **DTLS Security**: PSK identity and keys for secure connections  
+- **Client Parameters**: Endpoint name, lifetime, bootstrap settings
+- **Logging Options**: Debug output and message dumping
+
+## Usage
+
+Once configured and enabled, the plugin:
+
+1. **Starts LwM2M Client**: Connects to configured LwM2M server using Wakatiwai binary
+2. **Provides Web Interface**: Access at `http://your-signalk-server:3000/plugins/signalk-lwm2m/`
+3. **Maps SignalK Paths**: Configure which LwM2M resources map to SignalK data paths
+4. **Processes XML Objects**: Automatically converts LwM2M XML definitions to JSON
+
+## Development
 
 ### Plugin Installation
 ```bash
