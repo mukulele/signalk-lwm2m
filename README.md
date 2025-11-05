@@ -28,11 +28,11 @@ signalk-lwm2m-objects/
 
 ## Abstract
 
-A SignalK plugin to map SignalK paths to LwM2M (Lightweight M2M) objects/instances/resources.
+A SignalK plugin to map SignalK paths to LwM2M (Lightweight Machine to Machine) objects/instances/resources.
 
-This plugin will open a IPC connection to the wakatiwaiclient binary in ./build.
+This plugin will open an IPC connection to the wakatiwaiclient binary in ./build.
 
-The included wakatiwaiclient was build for Debian Bookwoorm ARM64. 
+The included wakatiwaiclient was built for Debian Bookwoorm ARM64. 
 Building a wakatiwaiclient for another platform is a separate project curently under development.
 (github mukulele/wakatiwai).
 
@@ -43,22 +43,22 @@ Restart SignalK Server and edit the mapping of LwM2M Objects/Instances/Ressource
 This can be done with the LwM2M WebUI or manually in the ./config/settings.json file.
 
 In SignalK -> PluginConfig you can edit the connection parameters.
-The LwM2M "Connection parameters to LwM2M server" are defaulting to the eclipse sandbox server.
+The LwM2M cConnection parameters are defaulting to the eclipse sandbox server.
 
-My setup:
+### My setup:
 An IOT Sim Card (e.g. 1NCE 10EUR for a 10 year lifetime)
 A CaT-M capable modem (e.g. Waveshare 30EUR SIM7000) 
 
-Use Case:
+### Use Case:
 Monitor and control your vessel from remote (as long as CAT-M is in reach) at low cost.
 
-Remarks:
+## Remarks:
 A example set-up of the CAT-M modem on a raspberry is a seperate project.
 (under developemt under github/mukulele).
 
-Plugin Installation:
+## Plugin Installation:
 Please refer to Signalk Doc's ...
 
-License - see LICENSE file for details.
+# License - see LICENSE file for details.
 
-## Developed for the SignalK Maritime Data Platform!
+# Developed for the SignalK Maritime Data Platform!
